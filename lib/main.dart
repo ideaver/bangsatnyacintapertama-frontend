@@ -1,6 +1,7 @@
 import 'package:alvamind_library_two/app/locale/app_locale.dart';
 import 'package:alvamind_library_two/app/service/network_checker/network_checker_service.dart';
 import 'package:alvamind_library_two/app/theme/app_theme.dart';
+import 'package:bangsatnyacintapertama/view_model/main_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
       providers: [
         // Providers
         ChangeNotifierProvider(create: (_) => locator<NetworkCheckerService>()),
+        ChangeNotifierProvider(create: (_) => locator<MainViewModel>()),
       ],
       child: MaterialApp(
         title: 'SatuJuta',

@@ -4,7 +4,7 @@ import 'package:alvamind_library_two/app/theme/app_text_style.dart';
 import 'package:alvamind_library_two/model/chart_data.dart';
 import 'package:alvamind_library_two/model/chart_legend_model.dart';
 import 'package:alvamind_library_two/widget/atom/app_card_container.dart';
-import 'package:alvamind_library_two/widget/atom/my_icon_button.dart';
+import 'package:alvamind_library_two/widget/atom/app_image.dart';
 import 'package:alvamind_library_two/widget/molecule/custom_app_bar.dart';
 import 'package:alvamind_library_two/widget/organism/bar_chart/doughnut_bar_chart.dart/doughtnut_full_bar_chart.dart';
 import 'package:alvamind_library_two/widget/organism/card_program/card_program.dart';
@@ -27,6 +27,9 @@ class _DashboardViewState extends State<DashboardView> {
       backgroundColor: AppColors.baseLv7,
       appBar: const CustomAppBar(
         title: "Dashboard",
+        userName: "Anthony",
+        userRole: "Administrator",
+        userImage: randomImage,
       ),
       body: body(),
     );
@@ -108,47 +111,38 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   Widget guestTotalCard() {
-    return CardProgram(
+    return const CardProgram(
       iconProgram: Icons.person_outline,
       title: 'TOTAL TAMU',
-      subtitle: '830',
-      bottomTitle: 'ORANG',
+      contentText: '830',
+      contentSubtext: 'ORANG',
       bottomTitleColor: AppColors.baseLv4,
-      customWidgetRightIcon: AppIconButton(
-        icon: Icons.info_outline,
-        iconColor: AppColors.baseLv4,
-        onPressed: () {},
-      ),
+      toolTipTitle: 'Lorem',
+      toolTipsubtitle: 'Lorem ipsum dolor ',
     );
   }
 
   Widget presentTotalCard() {
-    return CardProgram(
+    return const CardProgram(
       iconProgram: Icons.person_outline,
       title: 'HADIR',
-      subtitle: '23',
-      bottomTitle: 'ORANG',
+      contentText: '23',
+      contentSubtext: 'ORANG',
       bottomTitleColor: AppColors.baseLv4,
-      customWidgetRightIcon: AppIconButton(
-        icon: Icons.info_outline,
-        iconColor: AppColors.baseLv4,
-        onPressed: () {},
-      ),
+      toolTipTitle: 'Lorem',
+      toolTipsubtitle: 'Lorem ipsum dolor ',
     );
   }
 
   Widget absentTotalCard() {
-    return CardProgram(
+    return const CardProgram(
       iconProgram: Icons.person_outline,
       title: 'TIDAK HADIR',
-      subtitle: '23',
-      bottomTitle: 'ORANG',
+      contentText: '23',
+      contentSubtext: 'ORANG',
       bottomTitleColor: AppColors.baseLv4,
-      customWidgetRightIcon: AppIconButton(
-        icon: Icons.info_outline,
-        iconColor: AppColors.baseLv4,
-        onPressed: () {},
-      ),
+      toolTipTitle: 'Lorem',
+      toolTipsubtitle: 'Lorem ipsum dolor ',
     );
   }
 
@@ -156,8 +150,8 @@ class _DashboardViewState extends State<DashboardView> {
     return const CardProgram(
       iconProgram: Icons.person_outline,
       title: 'TERKIRIM',
-      subtitle: '327',
-      bottomTitle: 'UNDANGAN',
+      contentText: '327',
+      contentSubtext: 'UNDANGAN',
       bottomTitleColor: AppColors.baseLv4,
     );
   }
@@ -166,8 +160,8 @@ class _DashboardViewState extends State<DashboardView> {
     return const CardProgram(
       iconProgram: Icons.person_outline,
       title: 'GAGAL TERKIRIM',
-      subtitle: '27',
-      bottomTitle: 'UNDANGAN',
+      contentText: '27',
+      contentSubtext: 'UNDANGAN',
       bottomTitleColor: AppColors.baseLv4,
     );
   }
@@ -176,8 +170,8 @@ class _DashboardViewState extends State<DashboardView> {
     return const CardProgram(
       iconProgram: Icons.person_outline,
       title: 'BELUM RSVP',
-      subtitle: '346',
-      bottomTitle: 'UNDANGAN',
+      contentText: '346',
+      contentSubtext: 'UNDANGAN',
       bottomTitleColor: AppColors.baseLv4,
     );
   }

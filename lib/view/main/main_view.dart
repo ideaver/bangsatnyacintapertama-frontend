@@ -4,12 +4,16 @@ import 'package:alvamind_library_two/app/theme/app_sizes.dart';
 import 'package:alvamind_library_two/app/theme/app_text_style.dart';
 import 'package:alvamind_library_two/model/sidebar_menu_model.dart';
 import 'package:alvamind_library_two/widget/atom/app_button.dart';
+import 'package:alvamind_library_two/widget/atom/app_icon_button.dart';
 import 'package:alvamind_library_two/widget/atom/app_image.dart';
-import 'package:alvamind_library_two/widget/atom/my_icon_button.dart';
 import 'package:alvamind_library_two/widget/organism/sidebar/sidebar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../app/asset/app_assets.dart';
+import '../../view_model/main_view_model.dart';
+import '../auth/login_view.dart';
+import '../check_in/check_in_view.dart';
 import '../dashboard/dashboard_view.dart';
 import '../invited_guest/invited_guest_view.dart';
 
@@ -23,7 +27,7 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  int index = 0;
+  int index = 2;
 
   List<SideBarMenuModel> menuItems = [
     SideBarMenuModel(
@@ -52,20 +56,29 @@ class _MainViewState extends State<MainView> {
   List<Widget> pages = [
     const DashboardView(),
     const InvitedGuestView(),
+    const CheckInView(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return SideBar(
-      selectedIndex: index,
-      pages: pages,
-      menuItems: menuItems,
-      onTapBar: (value) {
-        index = value;
-        setState(() {});
+    return Consumer<MainViewModel>(
+      builder: (context, model, _) {
+        if (model.userId == null) {
+          return const LoginView();
+        }
+
+        return SideBar(
+          selectedIndex: index,
+          pages: pages,
+          menuItems: menuItems,
+          onTapBar: (value) {
+            index = value;
+            setState(() {});
+          },
+          footerExpandedWidget: footerExpandedWidget(),
+          footerShrinkedWidget: footerShrinkedWidget(),
+        );
       },
-      footerExpandedWidget: footerExpandedWidget(),
-      footerShrinkedWidget: footerShrinkedWidget(),
     );
   }
 

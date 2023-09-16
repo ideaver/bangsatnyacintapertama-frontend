@@ -9,7 +9,6 @@ import 'package:alvamind_library_two/widget/atom/app_dialog.dart';
 import 'package:alvamind_library_two/widget/atom/app_icon_button.dart';
 import 'package:alvamind_library_two/widget/atom/app_image.dart';
 import 'package:alvamind_library_two/widget/atom/app_table.dart';
-import 'package:alvamind_library_two/widget/atom/app_text_button.dart';
 import 'package:alvamind_library_two/widget/atom/app_text_field.dart';
 import 'package:alvamind_library_two/widget/molecule/app_checkbox.dart';
 import 'package:alvamind_library_two/widget/molecule/app_dropdown.dart';
@@ -18,29 +17,29 @@ import 'package:alvamind_library_two/widget/organism/card_program/card_program.d
 import 'package:flutter/material.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
 
-class InvitedGuestView extends StatefulWidget {
-  const InvitedGuestView({Key? key}) : super(key: key);
+class CheckInView extends StatefulWidget {
+  const CheckInView({Key? key}) : super(key: key);
 
-  static const String routeName = '/invited-guest';
+  static const String routeName = '/check-in';
 
   @override
-  State<InvitedGuestView> createState() => _InvitedGuestViewState();
+  State<CheckInView> createState() => _CheckInViewState();
 }
 
-class _InvitedGuestViewState extends State<InvitedGuestView> {
+class _CheckInViewState extends State<CheckInView> {
   MenuItemModel? selectedAction;
-  MenuItemModel? selectedStatus;
+  MenuItemModel? selectedCategory;
 
   List<MenuItemModel> actionDropdownItems = [
     MenuItemModel(
-      text: 'Aksi Massal',
+      text: 'Check-In',
       icon: const Icon(
-        Icons.send,
+        Icons.exit_to_app_rounded,
         size: 14,
       ),
     ),
     MenuItemModel(
-      text: 'Hapus',
+      text: 'Batalkan Check-In',
       icon: const Icon(
         Icons.cancel_outlined,
         size: 14,
@@ -50,58 +49,30 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
 
   List<MenuItemModel> statusDropdownItems = [
     MenuItemModel(
-      text: 'Tidak Hadir',
+      text: 'Urutkan Kategori',
       icon: const Icon(
-        Icons.circle,
-        color: AppColors.red,
+        Icons.person_outline,
         size: 14,
       ),
     ),
     MenuItemModel(
-      text: 'Hadir',
+      text: 'Urutkan Sub Kategori',
       icon: const Icon(
-        Icons.circle,
-        color: AppColors.greenLv1,
+        Icons.person_outline,
         size: 14,
       ),
     ),
     MenuItemModel(
-      text: 'Belum RSVP',
+      text: 'Urutkan Nama',
       icon: const Icon(
-        Icons.circle,
-        color: AppColors.yellow,
+        Icons.card_membership_rounded,
         size: 14,
       ),
     ),
     MenuItemModel(
-      text: 'Gagal Terkirim',
+      text: 'Terbaru',
       icon: const Icon(
-        Icons.close,
-        color: AppColors.base,
-        size: 14,
-      ),
-    ),
-    MenuItemModel(
-      text: 'Terkirim',
-      icon: const Icon(
-        Icons.check,
-        color: AppColors.base,
-        size: 14,
-      ),
-    ),
-    MenuItemModel(
-      text: 'Pending',
-      icon: const Icon(
-        Icons.access_time,
-        color: AppColors.base,
-        size: 14,
-      ),
-    ),
-    MenuItemModel(
-      text: 'Semua',
-      icon: const Icon(
-        Icons.people_alt_outlined,
-        color: AppColors.base,
+        Icons.fullscreen_exit_rounded,
         size: 14,
       ),
     ),
@@ -113,7 +84,7 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
 
   @override
   void initState() {
-    selectedStatus = statusDropdownItems.first;
+    selectedCategory = statusDropdownItems.first;
     selectedAction = actionDropdownItems.first;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -140,6 +111,10 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
           textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
         ),
         TableModel(
+          data: 'No. HP',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
           data: 'PIC',
           textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
         ),
@@ -148,11 +123,7 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
           textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
         ),
         TableModel(
-          data: 'Undangan',
-          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-        ),
-        TableModel(
-          data: 'RSVP',
+          data: 'Check-In',
           textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
         ),
       ];
@@ -174,9 +145,9 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
             TableModel(data: 'Data $index'),
             TableModel(data: 'Data $index'),
             TableModel(data: 'Data $index'),
-            TableModel(data: 'Data $index', textStyle: AppTextStyle.bold(context)),
             TableModel(data: 'Data $index'),
-            TableModel(child: rsvpTableWidgetValue(selectedStatus)),
+            TableModel(data: 'Data $index', textStyle: AppTextStyle.bold(context)),
+            TableModel(data: DateFormatter.slashDateShortedYearWithClock(DateTime.now().toIso8601String())),
           ],
         )
       ];
@@ -213,7 +184,7 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
     return Scaffold(
       backgroundColor: AppColors.baseLv7,
       appBar: const CustomAppBar(
-        title: "Tamu Undangan",
+        title: "Check-In Tamu",
         userName: "Anthony",
         userRole: "Administrator",
         userImage: randomImage,
@@ -236,11 +207,11 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
       padding: const EdgeInsets.all(AppSizes.padding),
       child: Column(
         children: [
-          invitedGuestTotalCard(),
+          checkInTotalCard(),
           const SizedBox(height: AppSizes.padding),
-          sendedTotalCard(),
+          unCheckInTotalCard(),
           const SizedBox(height: AppSizes.padding),
-          failedSentTotalCard(),
+          emptySeatTotalCard(),
           const SizedBox(height: AppSizes.padding),
           invitedGuestList(),
         ],
@@ -257,11 +228,11 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
             height: 300,
             child: Row(
               children: [
-                Expanded(child: invitedGuestTotalCard()),
+                Expanded(child: checkInTotalCard()),
                 const SizedBox(width: AppSizes.padding),
-                Expanded(child: sendedTotalCard()),
+                Expanded(child: unCheckInTotalCard()),
                 const SizedBox(width: AppSizes.padding),
-                Expanded(child: failedSentTotalCard()),
+                Expanded(child: emptySeatTotalCard()),
               ],
             ),
           ),
@@ -272,70 +243,44 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
     );
   }
 
-  Widget invitedGuestTotalCard() {
+  Widget checkInTotalCard() {
     return CardProgram(
       iconProgram: Icons.person_outline,
       backgroundColorIcon: AppColors.white,
       backgroundColor: AppColors.primary,
-      title: 'TOTAL TAMU UNDANGAN',
+      title: 'TOTAL CHECK-IN',
       contentText: '532',
       contentSubtext: 'ORANG',
       titleColor: AppColors.white.withOpacity(0.54),
       subtitleColor: AppColors.white,
       withButton: true,
       toolTipTitle: 'Lorem',
-      paddingToolTip: const EdgeInsets.only(right: AppSizes.padding * 12),
-      tootipContentWidget: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Untuk upload data secara masssal. Gunakan template XLSx di bawah ini.',
-            style: AppTextStyle.regular(
-              context,
-              fontSize: 14,
-              color: AppColors.baseLv4,
-            ),
-          ),
-          const SizedBox(height: AppSizes.padding / 4),
-          AppTextButton(
-            text: "Download Template",
-            textStyle: AppTextStyle.semiBold(
-              context,
-              fontSize: 14,
-              color: AppColors.primary,
-            ),
-            onTap: () {
-              // TODO
-            },
-          ),
-        ],
-      ),
-      buttonText: "Upload Tamu",
+      toolTipsubtitle: 'Lorem ipsum dolor ',
+      buttonText: "QR Scan",
       onTapButton: () {
         // TODO
       },
     );
   }
 
-  Widget sendedTotalCard() {
+  Widget unCheckInTotalCard() {
     return const CardProgram(
       iconProgram: Icons.person_outline,
-      title: 'UNDANGAN TERKIRIM',
-      contentText: '327',
-      contentSubtext: 'UNDANGAN',
+      title: 'BELUM CHECK-IN',
+      contentText: '37',
+      contentSubtext: 'ORANG',
       bottomTitleColor: AppColors.baseLv4,
       toolTipTitle: 'Lorem',
       toolTipsubtitle: 'Lorem ipsum dolor ',
     );
   }
 
-  Widget failedSentTotalCard() {
+  Widget emptySeatTotalCard() {
     return const CardProgram(
       iconProgram: Icons.person_outline,
-      title: 'UNDANGAN GAGAL TERKIRIM',
-      contentText: '27',
-      contentSubtext: 'UNDANGAN',
+      title: 'KURSI KOSONG',
+      contentText: '257',
+      contentSubtext: 'KURSI',
       bottomTitleColor: AppColors.baseLv4,
       toolTipTitle: 'Lorem',
       toolTipsubtitle: 'Lorem ipsum dolor ',
@@ -414,7 +359,7 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
       Breakpoints(
         xs: Row(
           children: [
-            addButton(),
+            refreshButton(),
             const SizedBox(width: AppSizes.padding / 1.5),
             deleteButton(),
           ],
@@ -427,7 +372,7 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
             const SizedBox(width: AppSizes.padding / 1.5),
             Expanded(child: actionDropDown()),
             const SizedBox(width: AppSizes.padding / 1.5),
-            addButton(),
+            refreshButton(),
             const SizedBox(width: AppSizes.padding / 1.5),
             deleteButton(),
           ],
@@ -452,12 +397,12 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
             Expanded(
               child: Row(
                 children: [
-                  selectedStatus?.icon ?? const SizedBox.shrink(),
+                  selectedCategory?.icon ?? const SizedBox.shrink(),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(left: AppSizes.padding / 2),
                       child: Text(
-                        selectedStatus?.text ?? '',
+                        selectedCategory?.text ?? '',
                         style: AppTextStyle.semiBold(context),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -490,7 +435,7 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
         ),
       ],
       onChanged: (value) {
-        selectedStatus = value as MenuItemModel;
+        selectedCategory = value as MenuItemModel;
         setState(() {});
       },
     );
@@ -554,13 +499,15 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
       fillColor: AppColors.baseLv7,
       padding: const EdgeInsets.symmetric(horizontal: AppSizes.padding / 2),
       hintText: 'Cari...',
-      onChanged: (value) {},
+      onChanged: (value) {
+        // TODO
+      },
     );
   }
 
-  Widget addButton() {
+  Widget refreshButton() {
     return AppIconButton(
-      icon: Icons.add_box_outlined,
+      icon: Icons.refresh_rounded,
       iconSize: 22,
       backgroundColor: AppColors.baseLv7,
       borderRadius: AppSizes.radius,
@@ -612,39 +559,6 @@ class _InvitedGuestViewState extends State<InvitedGuestView> {
       maxLines: 2,
       headerData: headerData,
       data: data,
-    );
-  }
-
-  Widget rsvpTableWidgetValue(MenuItemModel? data) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSizes.padding / 2),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: data?.icon ?? const SizedBox.shrink(),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: AppSizes.padding / 2),
-            child: Column(
-              children: [
-                Text(
-                  data?.text ?? '',
-                  style: AppTextStyle.semiBold(context),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: AppSizes.padding / 4),
-                Text(
-                  DateFormatter.slashDate(DateTime.now().toIso8601String()),
-                  style: AppTextStyle.semiBold(context, fontSize: 12, color: AppColors.baseLv4),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
