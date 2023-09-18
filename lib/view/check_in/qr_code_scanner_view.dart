@@ -1,11 +1,12 @@
+import 'package:alvamind_library_two/app/service/network_checker/network_checker_service.dart';
 import 'package:alvamind_library_two/app/theme/app_colors.dart';
 import 'package:alvamind_library_two/app/theme/app_sizes.dart';
 import 'package:alvamind_library_two/app/theme/app_text_style.dart';
 import 'package:alvamind_library_two/app/utility/console_log.dart';
 import 'package:alvamind_library_two/app/utility/date_formatter.dart';
 import 'package:flutter/material.dart';
-
-import 'qr_code_scanner_widget.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:provider/provider.dart';
 
 class QRCodeScannerView extends StatefulWidget {
   const QRCodeScannerView({super.key});
@@ -18,7 +19,7 @@ class QRCodeScannerView extends StatefulWidget {
 
 class _QRCodeScannerViewState extends State<QRCodeScannerView> {
   String code = '';
-
+// 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,26 +27,40 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.baseLv2,
+        iconTheme: const IconThemeData(color: AppColors.white),
       ),
       body: body(),
     );
   }
 
   Widget body() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSizes.padding),
-      child: Column(
-        children: [
-          header(),
-          scanner(),
-          result(),
-        ],
+    return Center(
+      child: Consumer<NetworkCheckerService>(
+        builder: (context, network, _) {
+          cl(network.isConnected);
+          if (!network.isConnected) {
+            return noInternet();
+          }
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSizes.padding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                header(),
+                scanner(),
+                result(),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 
   Widget header() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           'Scan QR Code',
@@ -69,25 +84,43 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
   }
 
   Widget scanner() {
-    return Expanded(
-      flex: 4,
-      child: AppBarcodeScannerWidget.defaultStyle(
-        resultCallback: (String code) {
-          setState(() {
-            code = code;
-            cl(code);
-          });
-        },
-        openManual: true,
+    return Container(
+      margin: const EdgeInsets.all(AppSizes.padding * 2),
+      constraints: BoxConstraints(
+        maxHeight: AppSizes.screenSize.height / 2,
+      ),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppSizes.radius * 2),
+          child: MobileScanner(
+            // fit: BoxFit.contain,
+            onDetect: (capture) {
+              final List<Barcode> barcodes = capture.barcodes;
+              // final Uint8List? image = capture.image;
+              for (final barcode in barcodes) {
+                code = "${barcode.rawValue}";
+                debugPrint('Barcode found! ${barcode.rawValue}');
+                setState(() {});
+              }
+            },
+          ),
+        ),
       ),
     );
   }
 
   Widget result() {
+    if (code == '') {
+      return const SizedBox.shrink();
+    }
+
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Hilda Mulya',
+          code,
+          textAlign: TextAlign.center,
           style: AppTextStyle.bold(
             context,
             fontSize: 26,
@@ -109,6 +142,32 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
           style: AppTextStyle.bold(
             context,
             fontSize: 26,
+            color: AppColors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget noInternet() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          "Anda Sedang Offline",
+          textAlign: TextAlign.center,
+          style: AppTextStyle.bold(
+            context,
+            fontSize: 26,
+            color: AppColors.red,
+          ),
+        ),
+        const SizedBox(height: AppSizes.padding / 2),
+        Text(
+          'Segera koneksikan ke internet',
+          style: AppTextStyle.medium(
+            context,
+            fontSize: 14,
             color: AppColors.white,
           ),
         ),

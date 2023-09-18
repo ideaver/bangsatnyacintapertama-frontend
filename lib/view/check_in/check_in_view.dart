@@ -17,6 +17,8 @@ import 'package:alvamind_library_two/widget/organism/card_program/card_program.d
 import 'package:flutter/material.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
 
+import 'qr_code_scanner_view.dart';
+
 class CheckInView extends StatefulWidget {
   const CheckInView({Key? key}) : super(key: key);
 
@@ -27,6 +29,8 @@ class CheckInView extends StatefulWidget {
 }
 
 class _CheckInViewState extends State<CheckInView> {
+  String? code;
+
   MenuItemModel? selectedAction;
   MenuItemModel? selectedCategory;
 
@@ -258,7 +262,7 @@ class _CheckInViewState extends State<CheckInView> {
       toolTipsubtitle: 'Lorem ipsum dolor ',
       buttonText: "QR Scan",
       onTapButton: () {
-        // TODO
+        Navigator.pushNamed(context, QRCodeScannerView.routeName);
       },
     );
   }

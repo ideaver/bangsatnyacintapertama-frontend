@@ -5,6 +5,7 @@ import '../../../../view/main/main_view.dart';
 import '../../view/auth/login_view.dart';
 import '../../view/auth/reset_pass_view.dart';
 import '../../view/check_in/check_in_view.dart';
+import '../../view/check_in/qr_code_scanner_view.dart';
 import '../../view/invited_guest/invited_guest_view.dart';
 
 class AppRoutes {
@@ -15,5 +16,6 @@ class AppRoutes {
     DashboardView.routeName: (context) => const DashboardView(),
     InvitedGuestView.routeName: (context) => const InvitedGuestView(),
     CheckInView.routeName: (context) => const CheckInView(),
+    QRCodeScannerView.routeName: (context) => const QRCodeScannerView(),
   };
 }

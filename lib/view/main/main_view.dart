@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../app/asset/app_assets.dart';
+import '../../app/service/locator/service_locator.dart';
 import '../../view_model/main_view_model.dart';
 import '../auth/login_view.dart';
 import '../check_in/check_in_view.dart';
@@ -27,7 +28,9 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  int index = 2;
+  final mainViewModel = locator<MainViewModel>();
+
+  int index = 0;
 
   List<SideBarMenuModel> menuItems = [
     SideBarMenuModel(
@@ -58,6 +61,13 @@ class _MainViewState extends State<MainView> {
     const InvitedGuestView(),
     const CheckInView(),
   ];
+
+  @override
+  void initState() {
+    final navigator = Navigator.of(context);
+    mainViewModel.initMainView(navigator);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
