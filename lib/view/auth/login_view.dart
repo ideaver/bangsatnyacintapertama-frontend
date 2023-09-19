@@ -8,8 +8,9 @@ import 'package:alvamind_library_two/widget/atom/app_text_fields_wrapper.dart';
 import 'package:alvamind_library_two/widget/molecule/circles_background.dart';
 import 'package:bangsatnyacintapertama/app/service/locator/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../view_model/main_view_model.dart';
+import '../../view_model/login_view_model.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -21,6 +22,22 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  final _loginViewModel = locator<LoginViewModel>();
+
+  @override
+  void initState() {
+    _loginViewModel.emailController = TextEditingController();
+    _loginViewModel.passwordController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _loginViewModel.emailController.dispose();
+    _loginViewModel.passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,25 +48,31 @@ class _LoginViewState extends State<LoginView> {
   }
 
   Widget body() {
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // logo(),
-            // const SizedBox(height: AppSizes.padding * 3),
-            welcomeText(),
-            const SizedBox(height: AppSizes.padding * 3),
-            form(),
-            const SizedBox(height: AppSizes.padding * 2),
-            loginButton(),
-            registerTextButton(),
-          ],
-        ),
-      ),
-    );
+    return ChangeNotifierProvider.value(
+        value: _loginViewModel,
+        builder: (context, snapshot) {
+          return Consumer<LoginViewModel>(builder: (context, model, _) {
+            return Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // logo(),
+                    // const SizedBox(height: AppSizes.padding * 3),
+                    welcomeText(),
+                    const SizedBox(height: AppSizes.padding * 3),
+                    form(model),
+                    const SizedBox(height: AppSizes.padding * 2),
+                    loginButton(model),
+                    registerTextButton(),
+                  ],
+                ),
+              ),
+            );
+          });
+        });
   }
 
   // Widget logo() {
@@ -87,11 +110,11 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  Widget form() {
+  Widget form(LoginViewModel model) {
     return AppTextFieldsWrapper(
       textFields: [
         AppTextField(
-          // controller: model.emailController,
+          controller: model.emailController,
           suffixIcon: Image.asset(AppAssets.contactFormIconPath),
           lableText: 'Email',
         ),
@@ -100,8 +123,8 @@ class _LoginViewState extends State<LoginView> {
           thickness: 1.5,
           height: 0,
         ),
-        const AppTextField(
-          // controller: model.passwordController,
+        AppTextField(
+          controller: model.passwordController,
           type: AppTextFieldType.password,
           lableText: 'Password',
         ),
@@ -109,13 +132,13 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  Widget loginButton() {
+  Widget loginButton(LoginViewModel model) {
     return AppButton(
       text: 'Masuk',
       onTap: () {
-        // TODO REMOVE
-        locator<MainViewModel>().userId = "";
-        locator<MainViewModel>().notifyListeners();
+        FocusScope.of(context).unfocus();
+        final navigator = Navigator.of(context);
+        model.onLogin(navigator);
       },
     );
   }

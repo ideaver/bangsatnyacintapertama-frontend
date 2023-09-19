@@ -37,6 +37,8 @@ dependencies:
   mobile_scanner: ^3.4.1
   alvamind_library_two:
     path: ../../satujuta/alvamind_two_library_frontend
+  bangsatnyacintapertama_graphql_client: 
+    path: ../bangsatnyacintapertama_graphql_client
 
 
   # The following adds the Cupertino Icons font to your application.

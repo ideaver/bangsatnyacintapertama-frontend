@@ -5,16 +5,16 @@ import 'package:alvamind_library_two/app/theme/app_text_style.dart';
 import 'package:alvamind_library_two/model/sidebar_menu_model.dart';
 import 'package:alvamind_library_two/widget/atom/app_button.dart';
 import 'package:alvamind_library_two/widget/atom/app_icon_button.dart';
-import 'package:alvamind_library_two/widget/atom/app_image.dart';
+import 'package:alvamind_library_two/widget/atom/app_progress_indicator.dart';
 import 'package:alvamind_library_two/widget/organism/sidebar/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../app/asset/app_assets.dart';
 import '../../app/service/locator/service_locator.dart';
 import '../../view_model/main_view_model.dart';
 import '../auth/login_view.dart';
 import '../check_in/check_in_view.dart';
+import '../check_in/qr_code_scanner_view.dart';
 import '../dashboard/dashboard_view.dart';
 import '../invited_guest/invited_guest_view.dart';
 
@@ -30,8 +30,6 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   final mainViewModel = locator<MainViewModel>();
 
-  int index = 0;
-
   List<SideBarMenuModel> menuItems = [
     SideBarMenuModel(
       icon: CustomIcon.document_icon,
@@ -46,14 +44,14 @@ class _MainViewState extends State<MainView> {
       icon: CustomIcon.receipt_icon,
       title: "Check-In Tamu",
     ),
-    SideBarMenuModel(
-      icon: CustomIcon.program_icon,
-      title: "Upload Data Tamu",
-    ),
-    SideBarMenuModel(
-      icon: CustomIcon.settings_icon,
-      title: "Pengaturan",
-    ),
+    // SideBarMenuModel(
+    //   icon: CustomIcon.program_icon,
+    //   title: "Upload Data Tamu",
+    // ),
+    // SideBarMenuModel(
+    //   icon: CustomIcon.settings_icon,
+    //   title: "Pengaturan",
+    // ),
   ];
 
   List<Widget> pages = [
@@ -64,8 +62,12 @@ class _MainViewState extends State<MainView> {
 
   @override
   void initState() {
-    final navigator = Navigator.of(context);
-    mainViewModel.initMainView(navigator);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final navigator = Navigator.of(context);
+      final mainViewModel = locator<MainViewModel>();
+
+      mainViewModel.initMainView(navigator);
+    });
     super.initState();
   }
 
@@ -73,18 +75,19 @@ class _MainViewState extends State<MainView> {
   Widget build(BuildContext context) {
     return Consumer<MainViewModel>(
       builder: (context, model, _) {
-        if (model.userId == null) {
-          return const LoginView();
+        if (!mainViewModel.isChecking) {
+          if (!mainViewModel.isLoggedIn) {
+            return const LoginView();
+          }
+        } else {
+          return const Center(child: AppProgressIndicator());
         }
 
         return SideBar(
-          selectedIndex: index,
+          selectedIndex: model.selectedPageIndex,
           pages: pages,
           menuItems: menuItems,
-          onTapBar: (value) {
-            index = value;
-            setState(() {});
-          },
+          onTapBar: model.onChangedPage,
           footerExpandedWidget: footerExpandedWidget(),
           footerShrinkedWidget: footerShrinkedWidget(),
         );
@@ -95,9 +98,13 @@ class _MainViewState extends State<MainView> {
   Widget footerExpandedWidget() {
     return Column(
       children: [
-        const AppImage(
-          image: AppAssets.longLogoPath,
-          imgProvider: ImgProvider.assetImage,
+        // const AppImage(
+        //   image: AppAssets.longLogoPath,
+        //   imgProvider: ImgProvider.assetImage,
+        // ),
+        Text(
+          'Bangsatnya Cinta Pertama',
+          style: AppTextStyle.bold(context, fontSize: 16),
         ),
         const SizedBox(height: AppSizes.padding * 1.5),
         Row(
@@ -129,8 +136,9 @@ class _MainViewState extends State<MainView> {
             vertical: AppSizes.padding / 1.5,
           ),
           text: 'SCAN QRCode',
-          onTap: () {
-            // TODO
+          onTap: () async {
+            mainViewModel.onChangedPage(2);
+            Navigator.pushNamed(context, QRCodeScannerView.routeName);
           },
         ),
       ],

@@ -2,12 +2,14 @@ import 'package:alvamind_library_two/app/locale/app_locale.dart';
 import 'package:alvamind_library_two/app/service/network_checker/network_checker_service.dart';
 import 'package:alvamind_library_two/app/theme/app_theme.dart';
 import 'package:bangsatnyacintapertama/view_model/main_view_model.dart';
+import 'package:bangsatnyacintapertama_graphql_client/graphql_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'app/routes/app_routes.dart';
+import 'app/service/auth/auth_service.dart';
 import 'app/service/locator/service_locator.dart';
 import 'view/main/main_view.dart';
 
@@ -35,6 +37,9 @@ void main() {
   //   packageName: "com.satujuta.web",
   //   channelName: "satujuta web notification",
   // );
+
+  // Initialize GraphQLService
+  GraphQLService.init(getToken: AuthService.getToken);
 
   // Set/lock orientationgvhvgj
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

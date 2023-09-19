@@ -7,16 +7,15 @@ import 'package:alvamind_library_two/model/table_model.dart';
 import 'package:alvamind_library_two/widget/atom/app_card_container.dart';
 import 'package:alvamind_library_two/widget/atom/app_dialog.dart';
 import 'package:alvamind_library_two/widget/atom/app_icon_button.dart';
-import 'package:alvamind_library_two/widget/atom/app_image.dart';
 import 'package:alvamind_library_two/widget/atom/app_table.dart';
 import 'package:alvamind_library_two/widget/atom/app_text_field.dart';
 import 'package:alvamind_library_two/widget/molecule/app_checkbox.dart';
 import 'package:alvamind_library_two/widget/molecule/app_dropdown.dart';
-import 'package:alvamind_library_two/widget/molecule/custom_app_bar.dart';
 import 'package:alvamind_library_two/widget/organism/card_program/card_program.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
 
+import '../../widget/app_bar_widget.dart';
 import 'qr_code_scanner_view.dart';
 
 class CheckInView extends StatefulWidget {
@@ -184,15 +183,11 @@ class _CheckInViewState extends State<CheckInView> {
   @override
   Widget build(BuildContext context) {
     AppSizes.screenSize = MediaQuery.of(context).size;
+     final navigator = Navigator.of(context);
 
     return Scaffold(
       backgroundColor: AppColors.baseLv7,
-      appBar: const CustomAppBar(
-        title: "Check-In Tamu",
-        userName: "Anthony",
-        userRole: "Administrator",
-        userImage: randomImage,
-      ),
+      appBar: appBarWidget(navigator: navigator, title: "Check-In Tamu"),
       body: body(),
     );
   }
@@ -429,7 +424,7 @@ class _CheckInViewState extends State<CheckInView> {
                 Padding(
                   padding: const EdgeInsets.only(left: AppSizes.padding / 2),
                   child: Text(
-                    item.text,
+                    item.text ?? '',
                     style: AppTextStyle.semiBold(context),
                   ),
                 ),
@@ -479,7 +474,7 @@ class _CheckInViewState extends State<CheckInView> {
                 Padding(
                   padding: const EdgeInsets.only(left: AppSizes.padding / 2),
                   child: Text(
-                    item.text,
+                    item.text ?? '',
                     style: AppTextStyle.semiBold(context),
                   ),
                 ),

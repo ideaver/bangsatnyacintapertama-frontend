@@ -45,7 +45,7 @@ class AppAssets {
   static const baseImagePath = '${_baseAssetsPath}images/';
   static const imageHotelPath = '${baseImagePath}hotel-image.png';
   static const emptyEmojiPath = '${baseImagePath}empty-emoji.png';
-  static const emptyPlaceHolder = '${baseImagePath}empty_placeholder';
+  static const emptyPlaceholder = '${baseImagePath}empty_placeholder';
   static const loadingGif = '${baseImagePath}loading.gif';
   // BANK
   static const _baseBankPath = '${baseImagePath}bank/';
