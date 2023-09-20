@@ -7,6 +7,7 @@ import 'package:alvamind_library_two/widget/atom/app_button.dart';
 import 'package:alvamind_library_two/widget/atom/app_icon_button.dart';
 import 'package:alvamind_library_two/widget/atom/app_progress_indicator.dart';
 import 'package:alvamind_library_two/widget/organism/sidebar/sidebar.dart';
+import 'package:bangsatnyacintapertama/view/invitation_guest/invitation_guest_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,6 @@ import '../auth/login_view.dart';
 import '../check_in/check_in_view.dart';
 import '../check_in/qr_code_scanner_view.dart';
 import '../dashboard/dashboard_view.dart';
-import '../invited_guest/invited_guest_view.dart';
 
 class MainView extends StatefulWidget {
   const MainView({Key? key}) : super(key: key);
@@ -56,7 +56,7 @@ class _MainViewState extends State<MainView> {
 
   List<Widget> pages = [
     const DashboardView(),
-    const InvitedGuestView(),
+    const InvitationGuestView(),
     const CheckInView(),
   ];
 

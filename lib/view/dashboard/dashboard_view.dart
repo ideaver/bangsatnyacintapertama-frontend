@@ -7,8 +7,11 @@ import 'package:alvamind_library_two/widget/atom/app_card_container.dart';
 import 'package:alvamind_library_two/widget/organism/bar_chart/doughnut_bar_chart.dart/doughtnut_full_bar_chart.dart';
 import 'package:alvamind_library_two/widget/organism/card_program/card_program.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
 
+import '../../app/service/locator/service_locator.dart';
+import '../../view_model/dashboard_view_model.dart';
 import '../../widget/app_bar_widget.dart';
 
 class DashboardView extends StatefulWidget {
@@ -22,8 +25,18 @@ class DashboardView extends StatefulWidget {
 
 class _DashboardViewState extends State<DashboardView> {
   @override
+  void initState() {
+    final dashboardViewModel = locator<DashboardViewModel>();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      dashboardViewModel.initDashboardView();
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-     final navigator = Navigator.of(context);
+    final navigator = Navigator.of(context);
     return Scaffold(
       backgroundColor: AppColors.baseLv7,
       appBar: appBarWidget(navigator: navigator, title: "Dashboard"),
@@ -107,144 +120,162 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   Widget guestTotalCard() {
-    return const CardProgram(
-      iconProgram: Icons.person_outline,
-      title: 'TOTAL TAMU',
-      contentText: '830',
-      contentSubtext: 'ORANG',
-      bottomTitleColor: AppColors.baseLv4,
-      toolTipTitle: 'Lorem',
-      toolTipsubtitle: 'Lorem ipsum dolor ',
-    );
+    return Consumer<DashboardViewModel>(builder: (context, model, _) {
+      return CardProgram(
+        iconProgram: Icons.person_outline,
+        title: 'TOTAL TAMU',
+        contentText: '${model.totalGuest}}',
+        contentSubtext: 'ORANG',
+        bottomTitleColor: AppColors.baseLv4,
+        toolTipTitle: 'Total Tamu',
+        toolTipsubtitle: 'Total semua tamu yang diundang',
+      );
+    });
   }
 
   Widget presentTotalCard() {
-    return const CardProgram(
-      iconProgram: Icons.person_outline,
-      title: 'HADIR',
-      contentText: '23',
-      contentSubtext: 'ORANG',
-      bottomTitleColor: AppColors.baseLv4,
-      toolTipTitle: 'Lorem',
-      toolTipsubtitle: 'Lorem ipsum dolor ',
-    );
+    return Consumer<DashboardViewModel>(builder: (context, model, _) {
+      return CardProgram(
+        iconProgram: Icons.person_outline,
+        title: 'HADIR',
+        contentText: '${model.totalGuestConfirmed}',
+        contentSubtext: 'ORANG',
+        bottomTitleColor: AppColors.baseLv4,
+        toolTipTitle: 'Lorem',
+        toolTipsubtitle: 'Lorem ipsum dolor ',
+      );
+    });
   }
 
   Widget absentTotalCard() {
-    return const CardProgram(
-      iconProgram: Icons.person_outline,
-      title: 'TIDAK HADIR',
-      contentText: '23',
-      contentSubtext: 'ORANG',
-      bottomTitleColor: AppColors.baseLv4,
-      toolTipTitle: 'Lorem',
-      toolTipsubtitle: 'Lorem ipsum dolor ',
-    );
+    return Consumer<DashboardViewModel>(builder: (context, model, _) {
+      return CardProgram(
+        iconProgram: Icons.person_outline,
+        title: 'TIDAK HADIR',
+        contentText: '${model.totalGuestRejected}',
+        contentSubtext: 'ORANG',
+        bottomTitleColor: AppColors.baseLv4,
+        toolTipTitle: 'Lorem',
+        toolTipsubtitle: 'Lorem ipsum dolor ',
+      );
+    });
   }
 
   Widget sendedTotalCard() {
-    return const CardProgram(
-      iconProgram: Icons.person_outline,
-      title: 'TERKIRIM',
-      contentText: '327',
-      contentSubtext: 'UNDANGAN',
-      bottomTitleColor: AppColors.baseLv4,
-    );
+    return Consumer<DashboardViewModel>(builder: (context, model, _) {
+      return CardProgram(
+        iconProgram: Icons.person_outline,
+        title: 'TERKIRIM',
+        contentText: '${model.totalGuestInvitationSent}',
+        contentSubtext: 'UNDANGAN',
+        bottomTitleColor: AppColors.baseLv4,
+      );
+    });
   }
 
   Widget failedSentTotalCard() {
-    return const CardProgram(
-      iconProgram: Icons.person_outline,
-      title: 'GAGAL TERKIRIM',
-      contentText: '27',
-      contentSubtext: 'UNDANGAN',
-      bottomTitleColor: AppColors.baseLv4,
-    );
+    return Consumer<DashboardViewModel>(builder: (context, model, _) {
+      return CardProgram(
+        iconProgram: Icons.person_outline,
+        title: 'GAGAL TERKIRIM',
+        contentText: '${model.totalGuestInvitationFailedSent}',
+        contentSubtext: 'UNDANGAN',
+        bottomTitleColor: AppColors.baseLv4,
+      );
+    });
   }
 
   Widget unRSVPTotalCard() {
-    return const CardProgram(
-      iconProgram: Icons.person_outline,
-      title: 'BELUM RSVP',
-      contentText: '346',
-      contentSubtext: 'UNDANGAN',
-      bottomTitleColor: AppColors.baseLv4,
-    );
+    return Consumer<DashboardViewModel>(builder: (context, model, _) {
+      return CardProgram(
+        iconProgram: Icons.person_outline,
+        title: 'BELUM RSVP',
+        contentText: '${model.totalGuestInvitationUnconfirmed}',
+        contentSubtext: 'UNDANGAN',
+        bottomTitleColor: AppColors.baseLv4,
+      );
+    });
   }
 
   Widget chart1() {
-    return chartWidget(
-      title: "UNDANGAN",
-      centerTitle: 'TOTAL MEMBER',
-      centersubtitle: '123.22',
-      subtitle: "Persentase undangan yang telah konfirmasi dengan yang belum",
-      chartData: [
-        ChartData('Aktif', 75, AppColors.primary),
-        ChartData('Tidak Aktif', 25, AppColors.primaryLv7),
-      ],
-      legends: [
-        ChartLegendModel(
-          title: "Telah Konfirmasi",
-          color: AppColors.primary,
-          value: '75%',
-        ),
-        ChartLegendModel(
-          title: "Belum RSVP",
-          color: AppColors.primaryLv7,
-          value: '25%',
-        ),
-      ],
-    );
+    return Consumer<DashboardViewModel>(builder: (context, model, _) {
+      return chartWidget(
+        title: "UNDANGAN",
+        centerTitle: 'TOTAL',
+        centersubtitle: '${model.totalGuestInvitationSent}',
+        subtitle: "Persentase undangan yang telah konfirmasi dengan yang belum",
+        chartData: [
+          ChartData('Aktif', model.totalGuestConfirmed.toDouble(), AppColors.primary),
+          ChartData('Tidak Aktif', model.totalGuestInvitationUnconfirmed.toDouble(), AppColors.primaryLv7),
+        ],
+        legends: [
+          ChartLegendModel(
+            title: "Telah Konfirmasi",
+            color: AppColors.primary,
+            value: '${model.totalGuestConfirmed / model.totalGuestInvitationSent * 100}%',
+          ),
+          ChartLegendModel(
+            title: "Belum RSVP",
+            color: AppColors.primaryLv7,
+            value: '${model.totalGuestInvitationUnconfirmed / model.totalGuestInvitationSent * 100}%',
+          ),
+        ],
+      );
+    });
   }
 
   Widget chart2() {
-    return chartWidget(
-      title: "UNDANGAN",
-      centerTitle: 'TOTAL MEMBER',
-      centersubtitle: '123.22',
-      subtitle: "Persentase undangan yang telah konfirmasi dengan yang belum",
-      chartData: [
-        ChartData('Aktif', 75, AppColors.greenLv1),
-        ChartData('Tidak Aktif', 25, AppColors.greenLv7),
-      ],
-      legends: [
-        ChartLegendModel(
-          title: "Telah Konfirmasi",
-          color: AppColors.greenLv1,
-          value: '75%',
-        ),
-        ChartLegendModel(
-          title: "Belum RSVP",
-          color: AppColors.greenLv7,
-          value: '25%',
-        ),
-      ],
-    );
+    return Consumer<DashboardViewModel>(builder: (context, model, _) {
+      return chartWidget(
+        title: "KONTAK",
+        centerTitle: 'TOTAL',
+        centersubtitle: '${model.totalGuestInvitationSent}',
+        subtitle: "Persentase undangan yang telah konfirmasi dengan yang belum",
+        chartData: [
+          ChartData('Aktif', model.totalGuestConfirmed.toDouble(), AppColors.primary),
+          ChartData('Tidak Aktif', model.totalGuestInvitationUnconfirmed.toDouble(), AppColors.primaryLv7),
+        ],
+        legends: [
+          ChartLegendModel(
+            title: "Email",
+            color: AppColors.greenLv1,
+            value: '${model.totalGuestConfirmed / model.totalGuestInvitationSent * 100}%',
+          ),
+          ChartLegendModel(
+            title: "No. WhatsApp",
+            color: AppColors.greenLv7,
+            value: '${model.totalGuestInvitationUnconfirmed / model.totalGuestInvitationSent * 100}%',
+          ),
+        ],
+      );
+    });
   }
 
   Widget chart3() {
-    return chartWidget(
-      title: "UNDANGAN",
-      centerTitle: 'TOTAL MEMBER',
-      centersubtitle: '123.22',
-      subtitle: "Persentase undangan yang telah konfirmasi dengan yang belum",
-      chartData: [
-        ChartData('Aktif', 75, AppColors.primary),
-        ChartData('Tidak Aktif', 25, AppColors.primaryLv7),
-      ],
-      legends: [
-        ChartLegendModel(
-          title: "Telah Konfirmasi",
-          color: AppColors.primary,
-          value: '75%',
-        ),
-        ChartLegendModel(
-          title: "Belum RSVP",
-          color: AppColors.primaryLv7,
-          value: '25%',
-        ),
-      ],
-    );
+    return Consumer<DashboardViewModel>(builder: (context, model, _) {
+      return chartWidget(
+        title: "UNDANGAN",
+        centerTitle: 'TOTAL',
+        centersubtitle: '${model.totalGuestInvitationSent}',
+        subtitle: "Persentase undangan yang telah konfirmasi dengan yang belum",
+        chartData: [
+          ChartData('Aktif', model.totalGuestConfirmed.toDouble(), AppColors.primary),
+          ChartData('Tidak Aktif', model.totalGuestInvitationUnconfirmed.toDouble(), AppColors.primaryLv7),
+        ],
+        legends: [
+          ChartLegendModel(
+            title: "Telah Konfirmasi",
+            color: AppColors.tangerine,
+            value: '${model.totalGuestConfirmed / model.totalGuestInvitationSent * 100}%',
+          ),
+          ChartLegendModel(
+            title: "Belum RSVP",
+            color: AppColors.tangerine.withOpacity(0.12),
+            value: '${model.totalGuestInvitationUnconfirmed / model.totalGuestInvitationSent * 100}%',
+          ),
+        ],
+      );
+    });
   }
 
   Widget chartWidget({

@@ -1,51 +1,151 @@
-List<String> hotelDummyTitle = [
-  'Hotel Indonesia Kempinski',
-  'Pullman Jakarta Indonesia',
-  'Grand Hyatt Jakarta',
-  'Shangri-La Hotel Jakarta',
-  'Mandarin Oriental Jakarta',
-  'Ayana Resort and Spa Bali',
-  'The St. Regis Bali Resort',
-  'Four Seasons Resort Bali at Sayan',
-  'W Bali - Seminyak',
-  'COMO Uma Ubud',
-  'Grand Cordena Hotel Bandung',
-  'Hotel 99 Jember',
+import 'package:alvamind_library_two/app/theme/app_colors.dart';
+import 'package:alvamind_library_two/model/menu_item_model.dart';
+import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
+import 'package:flutter/material.dart';
+
+List<MenuItemModel> actionDropdownItems = [
+  MenuItemModel(
+    value: "MASS_ACTION",
+    text: 'Aksi Massal',
+    icon: const Icon(
+      Icons.send,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: "DELETE",
+    text: 'Hapus',
+    icon: const Icon(
+      Icons.cancel_outlined,
+      size: 14,
+    ),
+  ),
 ];
 
-List<String> programDummyTitle = [
-  "Menikmati Pesona Pasir Putih Pantai Bali.",
-  "Berenang di Air Laut yang Jernih dan Segar.",
-  "Berjemur di Bawah Sinar Matahari Tropis.",
-  "Menyaksikan Indahnya Matahari Terbenam di Pantai.",
-  "Eksplorasi Terumbu Karang dan Keindahan Bawah Laut.",
-  "Bermain Bebas dengan Ombak Pantai.",
-  "Aktivitas Berselancar untuk Pemula dan Mahir.",
-  "Menyicipi Kelezatan Makanan Lokal di Warung Pantai.",
-  "Berjalan-jalan Santai di Pinggir Pantai saat Senja.",
-  "Mengunjungi Pura-Pura Tercantik yang Terletak di Dekat Pantai.",
-  "Berinteraksi dengan Penduduk Lokal dan Mengetahui Kehidupan Tradisional.",
-  "Mengabadikan Momen Menarik dengan Foto dan Video.",
-  "Berpartisipasi dalam Kegiatan Olahraga Pantai, Seperti Volley Pantai.",
-  "Mengeksplorasi Toko-Toko Oleh-Oleh Khas Bali.",
+List<MenuItemModel> statusDropdownItems = [
+  ...confirmationStatusDropdownItems,
+  ...invitationStatusDropdownItems,
 ];
 
-List<String> projectDummyTitle = [
-  "E-Commerce Pakaian Berkelanjutan",
-  "Konsultasi Keuangan Pemuda Digital",
-  "AI untuk Pembelajaran Bahasa Asing",
-  "Sewa Kendaraan Listrik Berbagi",
-  "Energi Terbarukan dari Limbah Organik",
-  "Aplikasi Kesehatan Mental Virtual",
-  "Pengiriman Makanan Organik",
-  "Pertanian Cerdas dengan Teknologi",
-  "Penukaran Keterampilan Komunitas",
-  "Logistik Real-time",
-  "Desain Interior Virtual",
-  "Baterai Ramah Lingkungan",
-  "Aplikasi Kencan Berbasis Minat",
-  "Keamanan Cyber untuk UMKM",
-  "Pengelolaan Sampah Efisien"
+List<MenuItemModel> confirmationStatusDropdownItems = [
+  MenuItemModel(
+    value: Enum$ConfirmationStatus.REJECTED.name,
+    text: 'Tidak Hadir',
+    icon: const Icon(
+      Icons.circle,
+      color: AppColors.red,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: Enum$ConfirmationStatus.CONFIRMED.name,
+    text: 'Hadir',
+    icon: const Icon(
+      Icons.circle,
+      color: AppColors.greenLv1,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: Enum$ConfirmationStatus.UNCONFIRMED.name,
+    text: 'Belum RSVP',
+    icon: const Icon(
+      Icons.circle,
+      color: AppColors.yellow,
+      size: 14,
+    ),
+  ),
 ];
 
-List<String> periods = ['Minggu', 'Bulan', 'Tahun'];
+List<MenuItemModel> invitationStatusDropdownItems = [
+  MenuItemModel(
+    value: "SENT_FAILED",
+    text: 'Gagal Terkirim',
+    icon: const Icon(
+      Icons.close,
+      color: AppColors.base,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: "SENT",
+    text: 'Terkirim',
+    icon: const Icon(
+      Icons.check,
+      color: AppColors.base,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: "WAITING",
+    text: 'Pending',
+    icon: const Icon(
+      Icons.access_time,
+      color: AppColors.base,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: "ALL",
+    text: 'Semua',
+    icon: const Icon(
+      Icons.people_alt_outlined,
+      color: AppColors.base,
+      size: 14,
+    ),
+  ),
+];
+
+List<MenuItemModel> checkInActionDropdownItems = [
+  MenuItemModel(
+    value: "CHECK_IN",
+    text: 'Check-In',
+    icon: const Icon(
+      Icons.exit_to_app_rounded,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: "CANCEL_CHECK_IN",
+    text: 'Batalkan Check-In',
+    icon: const Icon(
+      Icons.cancel_outlined,
+      size: 14,
+    ),
+  ),
+];
+
+List<MenuItemModel> checkInSortirDropdownItems = [
+  MenuItemModel(
+    value: "CATEGORY",
+    text: 'Urutkan Kategori',
+    icon: const Icon(
+      Icons.person_outline,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: "SUB_CATEGORY",
+    text: 'Urutkan Sub Kategori',
+    icon: const Icon(
+      Icons.person_outline,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: "NAME",
+    text: 'Urutkan Nama',
+    icon: const Icon(
+      Icons.card_membership_rounded,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: "RECENT",
+    text: 'Terbaru',
+    icon: const Icon(
+      Icons.fullscreen_exit_rounded,
+      size: 14,
+    ),
+  ),
+];

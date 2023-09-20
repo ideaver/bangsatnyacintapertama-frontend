@@ -18,8 +18,14 @@ class QRCodeScannerView extends StatefulWidget {
 }
 
 class _QRCodeScannerViewState extends State<QRCodeScannerView> {
+  List<String> fakenames = [
+    "Jhon DOe",
+    "Toyama Nao",
+    "Amamiya Sora",
+  ];
+
   String code = '';
-// 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,12 +100,12 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppSizes.radius * 2),
           child: MobileScanner(
-            // fit: BoxFit.contain,
             onDetect: (capture) {
               final List<Barcode> barcodes = capture.barcodes;
               // final Uint8List? image = capture.image;
               for (final barcode in barcodes) {
-                code = "${barcode.rawValue}";
+                // code = fakenames[Random().nextInt(3)];
+                code = barcode.rawValue ?? '';
                 debugPrint('Barcode found! ${barcode.rawValue}');
                 setState(() {});
               }

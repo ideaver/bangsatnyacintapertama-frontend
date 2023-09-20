@@ -91,7 +91,7 @@ class _LoginViewState extends State<LoginView> {
     return Column(
       children: [
         Text(
-          'Bangsatnya Cinta pertama',
+          'Bangsatnya Cinta Pertama',
           style: AppTextStyle.bold(
             context,
             fontSize: 26,
@@ -109,7 +109,7 @@ class _LoginViewState extends State<LoginView> {
       ],
     );
   }
-
+// 
   Widget form(LoginViewModel model) {
     return AppTextFieldsWrapper(
       textFields: [
