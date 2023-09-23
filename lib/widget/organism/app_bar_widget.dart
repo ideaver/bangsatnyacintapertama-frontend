@@ -1,11 +1,12 @@
-import 'package:alvamind_library_two/app/asset/app_icons.dart';
-import 'package:alvamind_library_two/model/menu_item_model.dart';
-import 'package:alvamind_library_two/widget/atom/app_dialog.dart';
-import 'package:alvamind_library_two/widget/atom/app_image.dart';
-import 'package:alvamind_library_two/widget/molecule/custom_app_bar.dart';
-import 'package:bangsatnyacintapertama/app/service/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
+
+import '../../app/asset/app_icons.dart';
+import '../../app/service/auth/auth_service.dart';
+import '../../model/menu_item_model.dart';
+import '../atom/app_dialog.dart';
+import '../atom/app_image.dart';
+import '../molecule/custom_app_bar.dart';
 
 List<MenuItemModel> _accountDropdownItems(NavigatorState navigator) {
   return [

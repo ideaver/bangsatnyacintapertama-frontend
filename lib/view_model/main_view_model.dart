@@ -1,10 +1,10 @@
-import 'package:alvamind_library_two/app/service/network_checker/network_checker_service.dart';
-import 'package:alvamind_library_two/app/utility/console_log.dart';
-import 'package:alvamind_library_two/widget/atom/app_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../app/service/auth/auth_service.dart';
 import '../app/service/locator/service_locator.dart';
+import '../app/service/network_checker/network_checker_service.dart';
+import '../app/utility/console_log.dart';
+import '../widget/atom/app_dialog.dart';
 
 class MainViewModel extends ChangeNotifier {
   // Singleton services

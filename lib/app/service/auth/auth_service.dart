@@ -1,16 +1,16 @@
 import 'dart:convert';
 
-import 'package:alvamind_library_two/app/service/storage/local_storage_service.dart';
-import 'package:alvamind_library_two/app/utility/console_log.dart';
-import 'package:alvamind_library_two/model/auth_model.dart';
 import 'package:bangsatnyacintapertama/view/main/main_view.dart';
 import 'package:bangsatnyacintapertama_graphql_client/gql_auth_service.dart';
 import 'package:bangsatnyacintapertama_graphql_client/operations/generated/auth_login.graphql.dart';
 import 'package:bangsatnyacintapertama_graphql_client/utils/gql_error_parser.dart';
 import 'package:flutter/material.dart';
 
+import '../../../model/auth_model.dart';
 import '../../../view_model/main_view_model.dart';
+import '../../utility/console_log.dart';
 import '../locator/service_locator.dart';
+import '../storage/local_storage_service.dart';
 
 class AuthService {
   static Auth? auth;

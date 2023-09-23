@@ -1,7 +1,8 @@
-import 'package:alvamind_library_two/app/utility/console_log.dart';
 import 'package:bangsatnyacintapertama_graphql_client/gql_user_service.dart';
 import 'package:bangsatnyacintapertama_graphql_client/utils/gql_error_parser.dart';
 import 'package:flutter/material.dart';
+
+import '../app/utility/console_log.dart';
 
 class DashboardViewModel extends ChangeNotifier {
   int totalGuest = 0;

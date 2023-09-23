@@ -1,15 +1,15 @@
-import 'package:alvamind_library_two/app/asset/app_assets.dart';
-import 'package:alvamind_library_two/app/theme/app_colors.dart';
-import 'package:alvamind_library_two/app/theme/app_sizes.dart';
-import 'package:alvamind_library_two/app/theme/app_text_style.dart';
-import 'package:alvamind_library_two/app/utility/validator.dart';
-import 'package:alvamind_library_two/widget/atom/app_button.dart';
-import 'package:alvamind_library_two/widget/atom/app_image.dart';
-import 'package:alvamind_library_two/widget/atom/app_text_field.dart';
-import 'package:alvamind_library_two/widget/atom/app_text_fields_wrapper.dart';
-import 'package:alvamind_library_two/widget/molecule/circles_background.dart';
-import 'package:alvamind_library_two/widget/organism/referral_inivitation/background_referral.dart';
 import 'package:flutter/material.dart';
+
+import '../../app/asset/app_assets.dart';
+import '../../app/theme/app_colors.dart';
+import '../../app/theme/app_sizes.dart';
+import '../../app/theme/app_text_style.dart';
+import '../../app/utility/validator.dart';
+import '../../widget/atom/app_button.dart';
+import '../../widget/atom/app_image.dart';
+import '../../widget/atom/app_text_field.dart';
+import '../../widget/atom/app_text_fields_wrapper.dart';
+import '../../widget/molecule/circles_background.dart';
 
 class ResetPasswordView extends StatefulWidget {
   const ResetPasswordView({super.key});
@@ -62,13 +62,6 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
         shape: BoxShape.circle,
         color: Color.fromRGBO(55, 114, 255, 0.05),
       ),
-    );
-  }
-
-  Widget photosBackground() {
-    return const BackgroudReferral(
-      width: 450,
-      imgNetwork: true,
     );
   }
 

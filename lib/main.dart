@@ -1,6 +1,3 @@
-import 'package:alvamind_library_two/app/locale/app_locale.dart';
-import 'package:alvamind_library_two/app/service/network_checker/network_checker_service.dart';
-import 'package:alvamind_library_two/app/theme/app_theme.dart';
 import 'package:bangsatnyacintapertama/view_model/check_in_view_model.dart';
 import 'package:bangsatnyacintapertama/view_model/dashboard_view_model.dart';
 import 'package:bangsatnyacintapertama/view_model/guest_invitation_view_model.dart';
@@ -11,9 +8,12 @@ import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
+import 'app/locale/app_locale.dart';
 import 'app/routes/app_routes.dart';
 import 'app/service/auth/auth_service.dart';
 import 'app/service/locator/service_locator.dart';
+import 'app/service/network_checker/network_checker_service.dart';
+import 'app/theme/app_theme.dart';
 import 'view/main/main_view.dart';
 
 void main() {

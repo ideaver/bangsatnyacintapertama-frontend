@@ -1,7 +1,8 @@
-import 'package:alvamind_library_two/app/theme/app_colors.dart';
-import 'package:alvamind_library_two/model/menu_item_model.dart';
 import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:flutter/material.dart';
+
+import '../../model/menu_item_model.dart';
+import '../theme/app_colors.dart';
 
 List<MenuItemModel> actionDropdownItems = [
   MenuItemModel(

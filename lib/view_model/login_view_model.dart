@@ -1,10 +1,10 @@
-import 'package:alvamind_library_two/app/utility/console_log.dart';
-import 'package:alvamind_library_two/widget/atom/app_dialog.dart';
-import 'package:alvamind_library_two/widget/atom/app_snackbar.dart';
 import 'package:flutter/material.dart';
 
 import '../app/service/auth/auth_service.dart';
+import '../app/utility/console_log.dart';
 import '../view/main/main_view.dart';
+import '../widget/atom/app_dialog.dart';
+import '../widget/atom/app_snackbar.dart';
 
 class LoginViewModel extends ChangeNotifier {
   TextEditingController emailController = TextEditingController();

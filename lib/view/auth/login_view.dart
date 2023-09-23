@@ -1,16 +1,16 @@
-import 'package:alvamind_library_two/app/asset/app_assets.dart';
-import 'package:alvamind_library_two/app/theme/app_colors.dart';
-import 'package:alvamind_library_two/app/theme/app_sizes.dart';
-import 'package:alvamind_library_two/app/theme/app_text_style.dart';
-import 'package:alvamind_library_two/widget/atom/app_button.dart';
-import 'package:alvamind_library_two/widget/atom/app_text_field.dart';
-import 'package:alvamind_library_two/widget/atom/app_text_fields_wrapper.dart';
-import 'package:alvamind_library_two/widget/molecule/circles_background.dart';
 import 'package:bangsatnyacintapertama/app/service/locator/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/asset/app_assets.dart';
+import '../../app/theme/app_colors.dart';
+import '../../app/theme/app_sizes.dart';
+import '../../app/theme/app_text_style.dart';
 import '../../view_model/login_view_model.dart';
+import '../../widget/atom/app_button.dart';
+import '../../widget/atom/app_text_field.dart';
+import '../../widget/atom/app_text_fields_wrapper.dart';
+import '../../widget/molecule/circles_background.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -109,7 +109,8 @@ class _LoginViewState extends State<LoginView> {
       ],
     );
   }
-// 
+
+//
   Widget form(LoginViewModel model) {
     return AppTextFieldsWrapper(
       textFields: [

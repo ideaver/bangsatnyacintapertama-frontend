@@ -1,18 +1,18 @@
-import 'package:alvamind_library_two/app/theme/app_colors.dart';
-import 'package:alvamind_library_two/app/theme/app_sizes.dart';
-import 'package:alvamind_library_two/app/theme/app_text_style.dart';
-import 'package:alvamind_library_two/model/chart_data.dart';
-import 'package:alvamind_library_two/model/chart_legend_model.dart';
-import 'package:alvamind_library_two/widget/atom/app_card_container.dart';
-import 'package:alvamind_library_two/widget/organism/bar_chart/doughnut_bar_chart.dart/doughtnut_full_bar_chart.dart';
-import 'package:alvamind_library_two/widget/organism/card_program/card_program.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
 
 import '../../app/service/locator/service_locator.dart';
+import '../../app/theme/app_colors.dart';
+import '../../app/theme/app_sizes.dart';
+import '../../app/theme/app_text_style.dart';
+import '../../model/chart_data.dart';
+import '../../model/chart_legend_model.dart';
 import '../../view_model/dashboard_view_model.dart';
-import '../../widget/app_bar_widget.dart';
+import '../../widget/atom/app_card_container.dart';
+import '../../widget/molecule/card_program.dart';
+import '../../widget/molecule/doughtnut_full_bar_chart.dart';
+import '../../widget/organism/app_bar_widget.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({Key? key}) : super(key: key);

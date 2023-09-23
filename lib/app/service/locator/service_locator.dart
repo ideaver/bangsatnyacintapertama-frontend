@@ -1,4 +1,3 @@
-import 'package:alvamind_library_two/app/service/network_checker/network_checker_service.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../../view_model/check_in_view_model.dart';
@@ -6,6 +5,7 @@ import '../../../view_model/dashboard_view_model.dart';
 import '../../../view_model/guest_invitation_view_model.dart';
 import '../../../view_model/login_view_model.dart';
 import '../../../view_model/main_view_model.dart';
+import '../network_checker/network_checker_service.dart';
 
 final GetIt locator = GetIt.instance;
 

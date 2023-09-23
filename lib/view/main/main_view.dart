@@ -1,22 +1,22 @@
-import 'package:alvamind_library_two/app/asset/app_icons.dart';
-import 'package:alvamind_library_two/app/theme/app_colors.dart';
-import 'package:alvamind_library_two/app/theme/app_sizes.dart';
-import 'package:alvamind_library_two/app/theme/app_text_style.dart';
-import 'package:alvamind_library_two/model/sidebar_menu_model.dart';
-import 'package:alvamind_library_two/widget/atom/app_button.dart';
-import 'package:alvamind_library_two/widget/atom/app_icon_button.dart';
-import 'package:alvamind_library_two/widget/atom/app_progress_indicator.dart';
-import 'package:alvamind_library_two/widget/organism/sidebar/sidebar.dart';
-import 'package:bangsatnyacintapertama/view/invitation_guest/invitation_guest_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/asset/app_icons.dart';
 import '../../app/service/locator/service_locator.dart';
+import '../../app/theme/app_colors.dart';
+import '../../app/theme/app_sizes.dart';
+import '../../app/theme/app_text_style.dart';
+import '../../model/sidebar_menu_model.dart';
 import '../../view_model/main_view_model.dart';
+import '../../widget/atom/app_button.dart';
+import '../../widget/atom/app_icon_button.dart';
+import '../../widget/atom/app_progress_indicator.dart';
+import '../../widget/organism/sidebar.dart';
 import '../auth/login_view.dart';
 import '../check_in/check_in_view.dart';
 import '../check_in/qr_code_scanner_view.dart';
 import '../dashboard/dashboard_view.dart';
+import '../invitation_guest/invitation_guest_view.dart';
 
 class MainView extends StatefulWidget {
   const MainView({Key? key}) : super(key: key);

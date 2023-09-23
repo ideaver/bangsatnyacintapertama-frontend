@@ -1,12 +1,13 @@
-import 'package:alvamind_library_two/app/service/network_checker/network_checker_service.dart';
-import 'package:alvamind_library_two/app/theme/app_colors.dart';
-import 'package:alvamind_library_two/app/theme/app_sizes.dart';
-import 'package:alvamind_library_two/app/theme/app_text_style.dart';
-import 'package:alvamind_library_two/app/utility/console_log.dart';
-import 'package:alvamind_library_two/app/utility/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
+
+import '../../app/service/network_checker/network_checker_service.dart';
+import '../../app/theme/app_colors.dart';
+import '../../app/theme/app_sizes.dart';
+import '../../app/theme/app_text_style.dart';
+import '../../app/utility/console_log.dart';
+import '../../app/utility/date_formatter.dart';
 
 class QRCodeScannerView extends StatefulWidget {
   const QRCodeScannerView({super.key});
