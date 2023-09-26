@@ -583,7 +583,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
       }
 
       return AppTable(
-        scrollController: scrollController,
+        // scrollController: scrollController,
         borderRadius: AppSizes.radius,
         tableBorderColor: AppColors.baseLv6,
         tableBorderWidth: 1,
@@ -655,7 +655,11 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
               ),
             ),
             TableModel(
-              data: model.guests![i].whatsappStatuses?.firstOrNull?.status.name ?? '-',
+              data: invitationStatusDropdownItems
+                      .where((e) => e.value == (model.guests![i].whatsappStatuses?.firstOrNull?.status.name ?? ''))
+                      .firstOrNull
+                      ?.text ??
+                  '-',
             ),
             TableModel(
               child: model.guests![i].invitationImage == null || model.guests![i].invitationImage?.path == null
