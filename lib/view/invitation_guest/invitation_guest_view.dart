@@ -1,7 +1,7 @@
+import 'package:bangsatnyacintapertama/app/utility/console_log.dart';
 import 'package:bangsatnyacintapertama/widget/atom/app_progress_indicator.dart';
 import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:flutter/material.dart';
-import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
 
@@ -10,6 +10,7 @@ import '../../app/service/locator/service_locator.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_sizes.dart';
 import '../../app/theme/app_text_style.dart';
+import '../../app/utility/image_downloader.dart';
 import '../../model/menu_item_model.dart';
 import '../../model/table_model.dart';
 import '../../view_model/guest_invitation_view_model.dart';
@@ -33,6 +34,7 @@ class InvitationGuestView extends StatefulWidget {
 }
 
 class _InvitationGuestViewState extends State<InvitationGuestView> {
+  final searchController = TextEditingController();
   List<TableModel> headerData = [];
 
   @override
@@ -95,6 +97,12 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
       guestInvitationViewModel.initInvitationView();
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -310,6 +318,8 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             addButton(),
             const SizedBox(width: AppSizes.padding / 1.5),
             deleteButton(),
+            const SizedBox(width: AppSizes.padding / 1.5),
+            refreshButton(),
           ],
         ),
         xl: Row(
@@ -323,6 +333,8 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             addButton(),
             const SizedBox(width: AppSizes.padding / 1.5),
             deleteButton(),
+            const SizedBox(width: AppSizes.padding / 1.5),
+            refreshButton(),
           ],
         ),
       ),
@@ -386,12 +398,24 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
         onChanged: (value) {
           model.selectedStatus = value as MenuItemModel;
 
-          if (Enum$ConfirmationStatus.values.where((e) => e.name == model.selectedAction?.value).isNotEmpty) {
+          if (Enum$ConfirmationStatus.values.where((e) => e.name == model.selectedStatus?.value).isNotEmpty) {
             model.confirmationStatus =
-                Enum$ConfirmationStatus.values.where((e) => e.name == model.selectedAction?.value).first;
+                Enum$ConfirmationStatus.values.where((e) => e.name == model.selectedStatus?.value).first;
+          } else {
+            model.confirmationStatus = null;
           }
 
-          setState(() {});
+          if (Enum$QueueStatus.values.where((e) => e.name == model.selectedStatus?.value).isNotEmpty) {
+            model.whatsAppQueueStatus =
+                Enum$QueueStatus.values.where((e) => e.name == model.selectedStatus?.value).toList();
+          } else {
+            model.whatsAppQueueStatus = null;
+          }
+
+          model.getAllGuests(contains: searchController.text);
+          cl(model.confirmationStatus?.name);
+
+          // setState(() {});
         },
       );
     });
@@ -452,16 +476,37 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
   Widget searchField() {
     return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
       return AppTextField(
+        controller: searchController,
         type: AppTextFieldType.search,
         showSuffixButton: false,
         prefixIcon: const Icon(Icons.search),
         fillColor: AppColors.baseLv7,
         padding: const EdgeInsets.symmetric(horizontal: AppSizes.padding / 2),
         hintText: 'Cari...',
+        onEditingComplete: () {
+          model.getAllGuests(contains: searchController.text);
+        },
         onChanged: (value) {
           if (value.length % 3 == 0) {
+            cl("search");
             model.getAllGuests(contains: value);
           }
+        },
+      );
+    });
+  }
+
+  Widget refreshButton() {
+    return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
+      return AppIconButton(
+        icon: Icons.replay_outlined,
+        iconSize: 22,
+        backgroundColor: AppColors.baseLv7,
+        borderRadius: AppSizes.radius,
+        onPressed: () async {
+          model.guests = null;
+          model.notifyListeners();
+          model.getAllGuests(contains: searchController.text);
         },
       );
     });
@@ -536,16 +581,20 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             xl: AppSizes.screenSize.width,
           ),
         ),
-        height: ResponsiveLayout.value(
-          context,
-          Breakpoints(
-            xs: AppSizes.screenSize.height - 350,
-            xl: AppSizes.screenSize.height - 280,
-          ),
-        ),
+        // height: double.maxFinite,
+        // height: ResponsiveLayout.value(
+        //   context,
+        //   Breakpoints(
+        //     xs: AppSizes.screenSize.height - 350,
+        //     xl: AppSizes.screenSize.height - 280,
+        //   ),
+        // ),
         padding: const EdgeInsets.all(AppSizes.padding),
         maxLines: 2,
         headerData: headerData,
+        onLoadMore: () {
+          model.getAllGuests(skip: model.guests!.length, contains: searchController.text);
+        },
         data: List.generate(
           model.guests!.length,
           (i) => [
@@ -599,12 +648,16 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
                   ? const SizedBox.shrink()
                   : InkWell(
                       onTap: () async {
-                        // ImageDownloader.download(
-                        //   context,
-                        //   model.guests![i].invitationImage?.path,
-                        //   model.guests![i].invitationName,
-                        // );
-                        await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
+                        await ImageDownloader.download(
+                          context,
+                          // "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png",
+                          model.guests![i].invitationImage?.path,
+                          model.guests![i].invitationName,
+                        );
+                        cl(model.guests![i].invitationImage?.path);
+                        // await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
+                        // await WebImageDownloader.downloadImageFromWeb(
+                        //     "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png");
                       },
                       child: Container(
                         color: AppColors.transparent,

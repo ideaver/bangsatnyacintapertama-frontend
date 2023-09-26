@@ -60,10 +60,10 @@ List<MenuItemModel> confirmationStatusDropdownItems = [
 
 List<MenuItemModel> invitationStatusDropdownItems = [
   MenuItemModel(
-    value: "SENT_FAILED",
-    text: 'Gagal Terkirim',
+    value: "READ",
+    text: 'Dibaca',
     icon: const Icon(
-      Icons.close,
+      Icons.remove_red_eye_outlined,
       color: AppColors.base,
       size: 14,
     ),

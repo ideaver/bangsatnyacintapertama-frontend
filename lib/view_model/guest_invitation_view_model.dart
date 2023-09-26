@@ -13,14 +13,14 @@ class GuestInvitationViewModel extends ChangeNotifier {
   int totalGuestInvitationSent = 0;
   int totalGuestInvitationFailedSent = 0;
 
-  List<Query$GuestFindManyOrderByInvitationName$guestFindMany>? guests;
-  List<Query$GuestFindManyOrderByInvitationName$guestFindMany> selectedGuests = [];
+  List<Query$GuestFindManyByInvitationName$guestFindMany>? guests;
+  List<Query$GuestFindManyByInvitationName$guestFindMany> selectedGuests = [];
 
   MenuItemModel? selectedAction = actionDropdownItems.first;
   MenuItemModel? selectedStatus = statusDropdownItems.last;
 
   Enum$UserRole userRole = Enum$UserRole.GUEST;
-  Enum$ConfirmationStatus confirmationStatus = Enum$ConfirmationStatus.CONFIRMED;
+  Enum$ConfirmationStatus? confirmationStatus;
   List<Enum$QueueStatus>? emailQueueStatus;
   List<Enum$QueueStatus>? whatsAppQueueStatus;
 
@@ -28,6 +28,16 @@ class GuestInvitationViewModel extends ChangeNotifier {
     totalGuest = 0;
     totalGuestInvitationSent = 0;
     totalGuestInvitationFailedSent = 0;
+    guests = null;
+    selectedGuests = [];
+
+    selectedAction = actionDropdownItems.first;
+    selectedStatus = statusDropdownItems.last;
+
+    userRole = Enum$UserRole.GUEST;
+    confirmationStatus = null;
+    emailQueueStatus = null;
+    whatsAppQueueStatus = null;
   }
 
   Future<void> initInvitationView() async {
@@ -100,14 +110,16 @@ class GuestInvitationViewModel extends ChangeNotifier {
     int skip = 0,
     String contains = "",
   }) async {
-    var res = await GqlGuestService.guestFindManyOrderByInvitationName(
+    var res = await GqlGuestService.guestFindManyByInvitationName(
       skip: skip,
-      // contains: contains,
+      contains: contains,
       // userRole: userRole,
-      // confirmationStatus: confirmationStatus,
+      confirmationStatus: confirmationStatus,
       // emailQueueStatus: emailQueueStatus,
-      // whatsAppQueueStatus: whatsAppQueueStatus,
+      whatsAppQueueStatus: whatsAppQueueStatus,
     );
+
+    cl("getAllGuests $contains");
 
     if (res.parsedData?.guestFindMany != null && !res.hasException) {
       if (skip == 0) {
@@ -118,6 +130,8 @@ class GuestInvitationViewModel extends ChangeNotifier {
     } else {
       cl('[getAllGuests].error = ${gqlErrorParser(res)}');
     }
+
+    cl(guests?.length);
 
     notifyListeners();
   }

@@ -27,6 +27,7 @@ class AppTable extends StatefulWidget {
   final Color bottomBorderColor;
   final double? tableBorderWidth;
   final Color tableBorderColor;
+  final Function()? onLoadMore;
 
   const AppTable({
     Key? key,
@@ -51,6 +52,7 @@ class AppTable extends StatefulWidget {
     this.bottomBorderColor = AppColors.baseLv7,
     this.tableBorderWidth,
     this.tableBorderColor = AppColors.baseLv7,
+    this.onLoadMore,
   }) : super(key: key);
 
   @override
@@ -59,6 +61,18 @@ class AppTable extends StatefulWidget {
 
 class _AppTableState extends State<AppTable> {
   ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    scrollController.addListener(() {
+      if (scrollController.offset == scrollController.position.maxScrollExtent) {
+        if (widget.onLoadMore != null) {
+          widget.onLoadMore!();
+        }
+      }
+    });
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -101,17 +115,27 @@ class _AppTableState extends State<AppTable> {
                   children: [
                     widget.headerData != null ? header(widget.headerData!) : const SizedBox.shrink(),
                     SizedBox(
-                      height: widget.height ?? AppSizes.screenSize.height,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            ...List.generate(widget.data.length, (i) {
-                              return row(widget.data[i]);
-                            })
-                          ],
+                        height: widget.height,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          controller: scrollController,
+                          itemCount: widget.data.length,
+                          itemBuilder: (context, i) {
+                            return row(widget.data[i]);
+                          },
+                        )
+
+                        // SingleChildScrollView(
+                        //   controller: scrollController,
+                        //   child: Column(
+                        //     children: [
+                        //       ...List.generate(widget.data.length, (i) {
+                        //         return row(widget.data[i]);
+                        //       })
+                        //     ],
+                        //   ),
+                        // ),
                         ),
-                      ),
-                    ),
                   ],
                 ),
               ),

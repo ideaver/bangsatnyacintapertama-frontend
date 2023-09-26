@@ -13,8 +13,8 @@ class CheckInViewModel extends ChangeNotifier {
   int totalUncheckIn = 0;
   int totalEmptySeat = 0;
 
-  List<Query$GuestFindManyOrderByInvitationName$guestFindMany>? guests;
-  List<Query$GuestFindManyOrderByInvitationName$guestFindMany> selectedGuests = [];
+  List<Query$GuestFindManyByInvitationName$guestFindMany>? guests;
+  List<Query$GuestFindManyByInvitationName$guestFindMany> selectedGuests = [];
 
   MenuItemModel? selectedAction = checkInActionDropdownItems.first;
   MenuItemModel? selectedSortir = checkInSortirDropdownItems.first;
@@ -74,9 +74,9 @@ class CheckInViewModel extends ChangeNotifier {
     int skip = 0,
     String contains = "",
   }) async {
-    var res = await GqlGuestService.guestFindManyOrderByInvitationName(
+    var res = await GqlGuestService.guestFindManyByInvitationName(
       skip: skip,
-      // contains: contains,
+      contains: contains,
       // userRole: userRole,
       // confirmationStatus: confirmationStatus,
       // emailQueueStatus: emailQueueStatus,
