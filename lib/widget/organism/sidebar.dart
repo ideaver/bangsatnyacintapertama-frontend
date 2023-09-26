@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
 
 import '../../../model/sidebar_menu_model.dart';
-import '../../app/asset/app_assets.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_sizes.dart';
 import '../../app/theme/app_text_style.dart';
@@ -181,8 +180,7 @@ class SideBarState extends State<SideBar> {
             width: !isExpand ? 25 : 40,
             height: !isExpand ? 25 : 40,
             child: const AppImage(
-              image: AppAssets.shortLogoPath,
-              imgProvider: ImgProvider.assetImage,
+              image: randomImage,
             ),
           ),
         ),

@@ -34,12 +34,23 @@ class InvitationGuestView extends StatefulWidget {
 }
 
 class _InvitationGuestViewState extends State<InvitationGuestView> {
+  ScrollController scrollController = ScrollController();
+
   final searchController = TextEditingController();
   List<TableModel> headerData = [];
 
   @override
   void initState() {
     final guestInvitationViewModel = locator<GuestInvitationViewModel>();
+
+    scrollController.addListener(() {
+      if (scrollController.offset == scrollController.position.maxScrollExtent) {
+        guestInvitationViewModel.getAllGuests(
+          skip: guestInvitationViewModel.guests!.length,
+          contains: searchController.text,
+        );
+      }
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       headerData = [
@@ -570,6 +581,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
       }
 
       return AppTable(
+        scrollController: scrollController,
         borderRadius: AppSizes.radius,
         tableBorderColor: AppColors.baseLv6,
         tableBorderWidth: 1,
@@ -592,9 +604,9 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
         padding: const EdgeInsets.all(AppSizes.padding),
         maxLines: 2,
         headerData: headerData,
-        onLoadMore: () {
-          model.getAllGuests(skip: model.guests!.length, contains: searchController.text);
-        },
+        // onLoadMore: () {
+        //   model.getAllGuests(skip: model.guests!.length, contains: searchController.text);
+        // },
         data: List.generate(
           model.guests!.length,
           (i) => [

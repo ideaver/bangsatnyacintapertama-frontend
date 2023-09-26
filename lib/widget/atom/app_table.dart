@@ -28,6 +28,7 @@ class AppTable extends StatefulWidget {
   final double? tableBorderWidth;
   final Color tableBorderColor;
   final Function()? onLoadMore;
+  final ScrollController? scrollController;
 
   const AppTable({
     Key? key,
@@ -53,6 +54,7 @@ class AppTable extends StatefulWidget {
     this.tableBorderWidth,
     this.tableBorderColor = AppColors.baseLv7,
     this.onLoadMore,
+    this.scrollController,
   }) : super(key: key);
 
   @override
@@ -60,23 +62,25 @@ class AppTable extends StatefulWidget {
 }
 
 class _AppTableState extends State<AppTable> {
-  ScrollController scrollController = ScrollController();
+  // ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
-    scrollController.addListener(() {
-      if (scrollController.offset == scrollController.position.maxScrollExtent) {
-        if (widget.onLoadMore != null) {
-          widget.onLoadMore!();
+    if (widget.scrollController != null) {
+      widget.scrollController!.addListener(() {
+        if (widget.scrollController!.offset == widget.scrollController!.position.maxScrollExtent) {
+          if (widget.onLoadMore != null) {
+            widget.onLoadMore!();
+          }
         }
-      }
-    });
+      });
+    }
     super.initState();
   }
 
   @override
   void dispose() {
-    scrollController.dispose();
+    widget.scrollController?.dispose();
     super.dispose();
   }
 
@@ -118,7 +122,7 @@ class _AppTableState extends State<AppTable> {
                         height: widget.height,
                         child: ListView.builder(
                           shrinkWrap: true,
-                          controller: scrollController,
+                          controller: widget.scrollController,
                           itemCount: widget.data.length,
                           itemBuilder: (context, i) {
                             return row(widget.data[i]);
