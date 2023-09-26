@@ -1,5 +1,5 @@
-import 'package:bangsatnyacintapertama_graphql_client/gql_user_service.dart';
-import 'package:bangsatnyacintapertama_graphql_client/operations/generated/user_find_many.graphql.dart';
+import 'package:bangsatnyacintapertama_graphql_client/gql_guest_service.dart';
+import 'package:bangsatnyacintapertama_graphql_client/operations/generated/guest_find_many_by_invitation_name.graphql.dart';
 import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:bangsatnyacintapertama_graphql_client/utils/gql_error_parser.dart';
 import 'package:flutter/material.dart';
@@ -7,16 +7,14 @@ import 'package:flutter/material.dart';
 import '../app/const/app_const.dart';
 import '../app/utility/console_log.dart';
 import '../model/menu_item_model.dart';
-import '../widget/atom/app_dialog.dart';
-import '../widget/atom/app_snackbar.dart';
 
 class CheckInViewModel extends ChangeNotifier {
   int totalCheckIn = 0;
   int totalUncheckIn = 0;
   int totalEmptySeat = 0;
 
-  List<Query$UserFindMany$userFindMany> guests = [];
-  List<Query$UserFindMany$userFindMany> selectedGuests = [];
+  List<Query$GuestFindManyOrderByInvitationName$guestFindMany>? guests;
+  List<Query$GuestFindManyOrderByInvitationName$guestFindMany> selectedGuests = [];
 
   MenuItemModel? selectedAction = checkInActionDropdownItems.first;
   MenuItemModel? selectedSortir = checkInSortirDropdownItems.first;
@@ -33,63 +31,63 @@ class CheckInViewModel extends ChangeNotifier {
   }
 
   Future<void> initCheckInView() async {
-    countTotalCheckIn();
-    counttotalUnCheckIn();
-    counttotalEmptySeat();
+    // countTotalCheckIn();
+    // counttotalUnCheckIn();
+    // counttotalEmptySeat();
     getAllGuests();
   }
 
   Future<void> countTotalCheckIn() async {
-    var res = await GqlUserService.countUserWhereRoleIsGuest();
+    // var res = await GqlUserService.countUserWhereRoleIsGuest();
 
-    if (res.parsedData?.userCount != null && !res.hasException) {
-      totalCheckIn = (res.parsedData?.userCount ?? 0).toInt();
-      notifyListeners();
-    } else {
-      cl('[countTotalCheckIn].error = ${gqlErrorParser(res)}');
-    }
+    // if (res.parsedData?.userCount != null && !res.hasException) {
+    //   totalCheckIn = (res.parsedData?.userCount ?? 0).toInt();
+    //   notifyListeners();
+    // } else {
+    //   cl('[countTotalCheckIn].error = ${gqlErrorParser(res)}');
+    // }
   }
 
   Future<void> counttotalUnCheckIn() async {
-    var res = await GqlUserService.countUserWhereRoleIsGuestAndEmailOrWhatsappStatusEqualSent();
+    // var res = await GqlUserService.countUserWhereRoleIsGuestAndEmailOrWhatsappStatusEqualSent();
 
-    if (res.parsedData?.userCount != null && !res.hasException) {
-      totalUncheckIn = (res.parsedData?.userCount ?? 0).toInt();
-      notifyListeners();
-    } else {
-      cl('[counttotalUnCheckIn].error = ${gqlErrorParser(res)}');
-    }
+    // if (res.parsedData?.userCount != null && !res.hasException) {
+    //   totalUncheckIn = (res.parsedData?.userCount ?? 0).toInt();
+    //   notifyListeners();
+    // } else {
+    //   cl('[counttotalUnCheckIn].error = ${gqlErrorParser(res)}');
+    // }
   }
 
   Future<void> counttotalEmptySeat() async {
-    var res = await GqlUserService.countUserWhereRoleIsGuestAndConfirmationStatusIsUnconfirmed();
+    // var res = await GqlUserService.countUserWhereRoleIsGuestAndConfirmationStatusIsUnconfirmed();
 
-    if (res.parsedData?.userCount != null && !res.hasException) {
-      totalEmptySeat = (res.parsedData?.userCount ?? 0).toInt();
-      notifyListeners();
-    } else {
-      cl('[counttotalEmptySeat].error = ${gqlErrorParser(res)}');
-    }
+    // if (res.parsedData?.userCount != null && !res.hasException) {
+    //   totalEmptySeat = (res.parsedData?.userCount ?? 0).toInt();
+    //   notifyListeners();
+    // } else {
+    //   cl('[counttotalEmptySeat].error = ${gqlErrorParser(res)}');
+    // }
   }
 
   Future<void> getAllGuests({
     int skip = 0,
     String contains = "",
   }) async {
-    var res = await GqlUserService.userFindMany(
+    var res = await GqlGuestService.guestFindManyOrderByInvitationName(
       skip: skip,
-      contains: contains,
-      userRole: userRole,
-      confirmationStatus: confirmationStatus,
-      emailQueueStatus: emailQueueStatus,
-      whatsAppQueueStatus: whatsAppQueueStatus,
+      // contains: contains,
+      // userRole: userRole,
+      // confirmationStatus: confirmationStatus,
+      // emailQueueStatus: emailQueueStatus,
+      // whatsAppQueueStatus: whatsAppQueueStatus,
     );
 
-    if (res.parsedData?.userFindMany != null && !res.hasException) {
+    if (res.parsedData?.guestFindMany != null && !res.hasException) {
       if (skip == 0) {
-        guests = res.parsedData?.userFindMany ?? [];
+        guests = res.parsedData?.guestFindMany ?? [];
       } else {
-        guests.addAll(res.parsedData?.userFindMany ?? []);
+        guests?.addAll(res.parsedData?.guestFindMany ?? []);
       }
     } else {
       cl('[getAllGuests].error = ${gqlErrorParser(res)}');
@@ -98,26 +96,26 @@ class CheckInViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteGuestData(NavigatorState navigator) async {
-    var res = await GqlUserService.userSoftDeletes(users: selectedGuests);
+  // void deleteGuestData(NavigatorState navigator) async {
+  //   var res = await GqlUserService.userSoftDeletes(users: selectedGuests);
 
-    if (!res.hasException) {
-      selectedGuests.clear();
-      initCheckInView();
-      AppSnackbar.show(navigator, title: "Berhasil dihapus");
-    } else {
-      AppDialog.showErrorDialog(navigator, error: gqlErrorParser(res));
-      cl('[counttotalUnCheckIn].error = ${gqlErrorParser(res)}');
-    }
-  }
+  //   if (!res.hasException) {
+  //     selectedGuests.clear();
+  //     initCheckInView();
+  //     AppSnackbar.show(navigator, title: "Berhasil dihapus");
+  //   } else {
+  //     AppDialog.showErrorDialog(navigator, error: gqlErrorParser(res));
+  //     cl('[counttotalUnCheckIn].error = ${gqlErrorParser(res)}');
+  //   }
+  // }
 
   void onSelectAll(bool? val) {
-    if (val == null) {
+    if (val == null || guests == null) {
       return;
     }
 
     if (val) {
-      selectedGuests.addAll(guests);
+      selectedGuests.addAll(guests!);
     } else {
       selectedGuests.clear();
     }
@@ -126,14 +124,14 @@ class CheckInViewModel extends ChangeNotifier {
   }
 
   void onSelect(bool? val, int i) {
-    if (val == null) {
+    if (val == null || guests == null) {
       return;
     }
 
     if (val) {
-      selectedGuests.add(guests[i]);
+      selectedGuests.add(guests![i]);
     } else {
-      selectedGuests.remove(guests[i]);
+      selectedGuests.remove(guests![i]);
     }
 
     notifyListeners();

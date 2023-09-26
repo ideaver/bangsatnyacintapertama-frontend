@@ -5,7 +5,6 @@ import '../../app/asset/app_icons.dart';
 import '../../app/service/auth/auth_service.dart';
 import '../../model/menu_item_model.dart';
 import '../atom/app_dialog.dart';
-import '../atom/app_image.dart';
 import '../molecule/custom_app_bar.dart';
 
 List<MenuItemModel> _accountDropdownItems(NavigatorState navigator) {
@@ -47,8 +46,8 @@ PreferredSizeWidget appBarWidget({
   return CustomAppBar(
     title: title,
     userName: AuthService.user?.fullName ?? '',
-    userRole: AuthService.user?.role.name,
-    userImage: randomImage,
+    userRole: AuthService.user?.role.name ?? '',
+    // userImage: randomImage,
     accountDropdownItems: _accountDropdownItems(navigator),
     height: ResponsiveLayout.value(navigator.context, Breakpoints(xs: 94 * 1.8, md: 94)),
   );

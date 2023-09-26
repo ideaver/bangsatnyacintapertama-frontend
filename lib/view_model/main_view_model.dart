@@ -42,6 +42,8 @@ class MainViewModel extends ChangeNotifier {
       isLoggedIn = false;
     }
 
+    // isLoggedIn = true;
+
     cl('[checkIsLoggedIn].isLoggedIn = $isLoggedIn');
 
     isChecking = false;

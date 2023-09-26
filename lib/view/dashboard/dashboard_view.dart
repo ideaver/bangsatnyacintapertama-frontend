@@ -124,7 +124,7 @@ class _DashboardViewState extends State<DashboardView> {
       return CardProgram(
         iconProgram: Icons.person_outline,
         title: 'TOTAL TAMU',
-        contentText: '${model.totalGuest}}',
+        contentText: '${model.totalGuest}',
         contentSubtext: 'ORANG',
         bottomTitleColor: AppColors.baseLv4,
         toolTipTitle: 'Total Tamu',

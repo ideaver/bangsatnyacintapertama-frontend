@@ -1,5 +1,5 @@
-import 'package:bangsatnyacintapertama_graphql_client/gql_user_service.dart';
-import 'package:bangsatnyacintapertama_graphql_client/operations/generated/user_find_many.graphql.dart';
+import 'package:bangsatnyacintapertama_graphql_client/gql_guest_service.dart';
+import 'package:bangsatnyacintapertama_graphql_client/operations/generated/guest_find_many_by_invitation_name.graphql.dart';
 import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:bangsatnyacintapertama_graphql_client/utils/gql_error_parser.dart';
 import 'package:flutter/material.dart';
@@ -7,19 +7,17 @@ import 'package:flutter/material.dart';
 import '../app/const/app_const.dart';
 import '../app/utility/console_log.dart';
 import '../model/menu_item_model.dart';
-import '../widget/atom/app_dialog.dart';
-import '../widget/atom/app_snackbar.dart';
 
 class GuestInvitationViewModel extends ChangeNotifier {
   int totalGuest = 0;
   int totalGuestInvitationSent = 0;
   int totalGuestInvitationFailedSent = 0;
 
-  List<Query$UserFindMany$userFindMany> guests = [];
-  List<Query$UserFindMany$userFindMany> selectedGuests = [];
+  List<Query$GuestFindManyOrderByInvitationName$guestFindMany>? guests;
+  List<Query$GuestFindManyOrderByInvitationName$guestFindMany> selectedGuests = [];
 
   MenuItemModel? selectedAction = actionDropdownItems.first;
-  MenuItemModel? selectedStatus = statusDropdownItems.first;
+  MenuItemModel? selectedStatus = statusDropdownItems.last;
 
   Enum$UserRole userRole = Enum$UserRole.GUEST;
   Enum$ConfirmationStatus confirmationStatus = Enum$ConfirmationStatus.CONFIRMED;
@@ -33,63 +31,89 @@ class GuestInvitationViewModel extends ChangeNotifier {
   }
 
   Future<void> initInvitationView() async {
-    countTotalGuest();
-    counttotalGuestInvitationSent();
-    counttotalGuestInvitationFailedSent();
+    // countTotalGuest();
+    // counttotalGuestInvitationSent();
+    // counttotalGuestInvitationFailedSent();
     getAllGuests();
+
+    // TEST PURPOSE
+    // guests = [
+    //   ...List.generate(
+    //     20,
+    //     (index) => Query$UserFindMany$userFindMany(
+    //       id: '',
+    //       fullName: 'User ${index + 1}',
+    //       password: "",
+    //       role: Enum$UserRole.GUEST,
+    //       email: "user${index + 1}@user.com",
+    //       whatsapp: "+6283366446${index + 10}",
+    //       guestInfo: Query$UserFindMany$userFindMany$guestInfo(
+    //         userId: "",
+    //         parties: 1,
+    //         confirmationStatus: Enum$ConfirmationStatus.CONFIRMED,
+    //         personInCharge: "User X",
+    //         category1: "Guest",
+    //         category2: "VIP",
+    //         seat: "${index + 1}",
+    //       ),
+    //       createdAt: DateTime.now().toIso8601String(),
+    //       updatedAt: DateTime.now().toIso8601String(),
+    //     ),
+    //   )
+    // ];
   }
 
-  Future<void> countTotalGuest() async {
-    var res = await GqlUserService.countUserWhereRoleIsGuest();
+  // Future<void> countTotalGuest() async {
+  //   var res = await GqlUserService.countUserWhereRoleIsGuest();
 
-    if (res.parsedData?.userCount != null && !res.hasException) {
-      totalGuest = (res.parsedData?.userCount ?? 0).toInt();
-      notifyListeners();
-    } else {
-      cl('[countTotalGuest].error = ${gqlErrorParser(res)}');
-    }
-  }
+  //   if (res.parsedData?.userCount != null && !res.hasException) {
+  //     totalGuest = (res.parsedData?.userCount ?? 0).toInt();
+  //     notifyListeners();
+  //   } else {
+  //     cl('[countTotalGuest].error = ${gqlErrorParser(res)}');
+  //   }
+  // }
 
-  Future<void> counttotalGuestInvitationSent() async {
-    var res = await GqlUserService.countUserWhereRoleIsGuestAndEmailOrWhatsappStatusEqualSent();
+  // Future<void> counttotalGuestInvitationSent() async {
+  //   var res = await GqlUserService.countUserWhereRoleIsGuestAndEmailOrWhatsappStatusEqualSent();
 
-    if (res.parsedData?.userCount != null && !res.hasException) {
-      totalGuestInvitationSent = (res.parsedData?.userCount ?? 0).toInt();
-      notifyListeners();
-    } else {
-      cl('[counttotalGuestInvitationSent].error = ${gqlErrorParser(res)}');
-    }
-  }
+  //   if (res.parsedData?.userCount != null && !res.hasException) {
+  //     totalGuestInvitationSent = (res.parsedData?.userCount ?? 0).toInt();
+  //     notifyListeners();
+  //   } else {
+  //     cl('[counttotalGuestInvitationSent].error = ${gqlErrorParser(res)}');
+  //   }
+  // }
 
-  Future<void> counttotalGuestInvitationFailedSent() async {
-    var res = await GqlUserService.countUserWhereRoleIsGuestAndConfirmationStatusIsUnconfirmed();
+  // Future<void> counttotalGuestInvitationFailedSent() async {
+  //   var res = await GqlUserService.countUserWhereRoleIsGuestAndConfirmationStatusIsUnconfirmed();
 
-    if (res.parsedData?.userCount != null && !res.hasException) {
-      totalGuestInvitationFailedSent = (res.parsedData?.userCount ?? 0).toInt();
-      notifyListeners();
-    } else {
-      cl('[counttotalGuestInvitationFailedSent].error = ${gqlErrorParser(res)}');
-    }
-  }
+  //   if (res.parsedData?.userCount != null && !res.hasException) {
+  //     totalGuestInvitationFailedSent = (res.parsedData?.userCount ?? 0).toInt();
+  //     notifyListeners();
+  //   } else {
+  //     cl('[counttotalGuestInvitationFailedSent].error = ${gqlErrorParser(res)}');
+  //   }
+  // }
 
   Future<void> getAllGuests({
     int skip = 0,
     String contains = "",
   }) async {
-    var res = await GqlUserService.userFindMany(
+    var res = await GqlGuestService.guestFindManyOrderByInvitationName(
       skip: skip,
-      contains: contains,
-      userRole: userRole,
-      confirmationStatus: confirmationStatus,
-      emailQueueStatus: emailQueueStatus,
-      whatsAppQueueStatus: whatsAppQueueStatus,
+      // contains: contains,
+      // userRole: userRole,
+      // confirmationStatus: confirmationStatus,
+      // emailQueueStatus: emailQueueStatus,
+      // whatsAppQueueStatus: whatsAppQueueStatus,
     );
 
-    if (res.parsedData?.userFindMany != null && !res.hasException) {
+    if (res.parsedData?.guestFindMany != null && !res.hasException) {
       if (skip == 0) {
-        guests = res.parsedData?.userFindMany ?? [];
+        guests = res.parsedData?.guestFindMany ?? [];
       } else {
-        guests.addAll(res.parsedData?.userFindMany ?? []);
+        guests?.addAll(res.parsedData?.guestFindMany ?? []);
       }
     } else {
       cl('[getAllGuests].error = ${gqlErrorParser(res)}');
@@ -98,26 +122,26 @@ class GuestInvitationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteGuestData(NavigatorState navigator) async {
-    var res = await GqlUserService.userSoftDeletes(users: selectedGuests);
+  // void deleteGuestData(NavigatorState navigator) async {
+  //   var res = await GqlUserService.userSoftDeletes(users: selectedGuests);
 
-    if (!res.hasException) {
-      selectedGuests.clear();
-      initInvitationView();
-      AppSnackbar.show(navigator, title: "Berhasil dihapus");
-    } else {
-      AppDialog.showErrorDialog(navigator, error: gqlErrorParser(res));
-      cl('[counttotalGuestInvitationSent].error = ${gqlErrorParser(res)}');
-    }
-  }
+  //   if (!res.hasException) {
+  //     selectedGuests.clear();
+  //     initInvitationView();
+  //     AppSnackbar.show(navigator, title: "Berhasil dihapus");
+  //   } else {
+  //     AppDialog.showErrorDialog(navigator, error: gqlErrorParser(res));
+  //     cl('[counttotalGuestInvitationSent].error = ${gqlErrorParser(res)}');
+  //   }
+  // }
 
   void onSelectAll(bool? val) {
-    if (val == null) {
+    if (val == null || guests == null) {
       return;
     }
 
     if (val) {
-      selectedGuests.addAll(guests);
+      selectedGuests.addAll(guests!);
     } else {
       selectedGuests.clear();
     }
@@ -126,14 +150,14 @@ class GuestInvitationViewModel extends ChangeNotifier {
   }
 
   void onSelect(bool? val, int i) {
-    if (val == null) {
+    if (val == null || guests == null) {
       return;
     }
 
     if (val) {
-      selectedGuests.add(guests[i]);
+      selectedGuests.add(guests![i]);
     } else {
-      selectedGuests.remove(guests[i]);
+      selectedGuests.remove(guests![i]);
     }
 
     notifyListeners();

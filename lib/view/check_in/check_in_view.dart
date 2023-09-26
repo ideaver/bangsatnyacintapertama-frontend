@@ -12,10 +12,9 @@ import '../../model/table_model.dart';
 import '../../view_model/check_in_view_model.dart';
 import '../../widget/atom/app_card_container.dart';
 import '../../widget/atom/app_checkbox.dart';
-import '../../widget/atom/app_dialog.dart';
 import '../../widget/atom/app_dropdown.dart';
 import '../../widget/atom/app_icon_button.dart';
-import '../../widget/atom/app_snackbar.dart';
+import '../../widget/atom/app_progress_indicator.dart';
 import '../../widget/atom/app_table.dart';
 import '../../widget/atom/app_text_field.dart';
 import '../../widget/molecule/card_program.dart';
@@ -38,47 +37,51 @@ class _CheckInViewState extends State<CheckInView> {
   void initState() {
     final checkInViewModel = locator<CheckInViewModel>();
 
-    headerData = [
-      TableModel(
-        expanded: false,
-        child: AppCheckbox(
-          value: false,
-          fillColor: AppColors.primary,
-          padding: const EdgeInsets.only(left: AppSizes.padding / 2),
-          onChanged: checkInViewModel.onSelectAll,
-        ),
-      ),
-      TableModel(
-        data: 'Nama',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'Kategori',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'Email',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'No. HP',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'PIC',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'Seat',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'Check-In',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-    ];
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      headerData = [
+        TableModel(
+          expanded: false,
+          child: AppCheckbox(
+            value: false,
+            fillColor: AppColors.primary,
+            padding: const EdgeInsets.only(left: AppSizes.padding / 2),
+            onChanged: checkInViewModel.onSelectAll,
+          ),
+        ),
+        TableModel(
+          data: 'Nama',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
+          data: 'Kategori',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        // TableModel(
+        //   data: 'Email',
+        //   textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        // ),
+        TableModel(
+          data: 'WhatsApp',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
+          data: 'Studio',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
+          data: 'Seat',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
+          data: 'Show Time',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        // TableModel(
+        //   data: 'RSVP',
+        //   textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        // ),
+      ];
+
       checkInViewModel.initCheckInView();
     });
 
@@ -153,7 +156,7 @@ class _CheckInViewState extends State<CheckInView> {
       backgroundColorIcon: AppColors.white,
       backgroundColor: AppColors.primary,
       title: 'TOTAL CHECK-IN',
-      contentText: '532',
+      contentText: '0',
       contentSubtext: 'ORANG',
       titleColor: AppColors.white.withOpacity(0.54),
       subtitleColor: AppColors.white,
@@ -171,7 +174,7 @@ class _CheckInViewState extends State<CheckInView> {
     return const CardProgram(
       iconProgram: Icons.person_outline,
       title: 'BELUM CHECK-IN',
-      contentText: '37',
+      contentText: '0',
       contentSubtext: 'ORANG',
       bottomTitleColor: AppColors.baseLv4,
       toolTipTitle: 'Lorem',
@@ -183,7 +186,7 @@ class _CheckInViewState extends State<CheckInView> {
     return const CardProgram(
       iconProgram: Icons.person_outline,
       title: 'KURSI KOSONG',
-      contentText: '257',
+      contentText: '0',
       contentSubtext: 'KURSI',
       bottomTitleColor: AppColors.baseLv4,
       toolTipTitle: 'Lorem',
@@ -439,25 +442,25 @@ class _CheckInViewState extends State<CheckInView> {
         backgroundColor: AppColors.baseLv7,
         borderRadius: AppSizes.radius,
         onPressed: () {
-          final navigator = Navigator.of(context);
-          if (model.selectedGuests.isEmpty) {
-            AppSnackbar.show(navigator, title: "Pilih data terlebih dahulu");
-            return;
-          }
+          // final navigator = Navigator.of(context);
+          // if (model.selectedGuests.isEmpty) {
+          //   AppSnackbar.show(navigator, title: "Pilih data terlebih dahulu");
+          //   return;
+          // }
 
-          AppDialog.show(
-            navigator,
-            title: "Hapus Data",
-            text:
-                "Apa anda yakin ingin menghapus ${model.selectedGuests.length} data ini?\nAnda tidak dapat memulihkan data yang telah dihapus!",
-            rightButtonText: "Hapus (${model.selectedGuests.length})",
-            leftButtonText: "Batal",
-            rightButtonTextColor: AppColors.red,
-            onTapRightButton: () {
-              navigator.pop();
-              model.deleteGuestData(navigator);
-            },
-          );
+          // AppDialog.show(
+          //   navigator,
+          //   title: "Hapus Data",
+          //   text:
+          //       "Apa anda yakin ingin menghapus ${model.selectedGuests.length} data ini?\nAnda tidak dapat memulihkan data yang telah dihapus!",
+          //   rightButtonText: "Hapus (${model.selectedGuests.length})",
+          //   leftButtonText: "Batal",
+          //   rightButtonTextColor: AppColors.red,
+          //   onTapRightButton: () {
+          //     navigator.pop();
+          //     model.deleteGuestData(navigator);
+          //   },
+          // );
         },
       );
     });
@@ -465,6 +468,15 @@ class _CheckInViewState extends State<CheckInView> {
 
   Widget table() {
     return Consumer<CheckInViewModel>(builder: (context, model, _) {
+      if (model.guests == null) {
+        return const Center(
+          child: Padding(
+            padding: EdgeInsets.all(AppSizes.padding),
+            child: AppProgressIndicator(),
+          ),
+        );
+      }
+
       return AppTable(
         borderRadius: AppSizes.radius,
         tableBorderColor: AppColors.baseLv6,
@@ -488,7 +500,7 @@ class _CheckInViewState extends State<CheckInView> {
         maxLines: 2,
         headerData: headerData,
         data: List.generate(
-          model.guests.length,
+          model.guests!.length,
           (i) => [
             TableModel(
               expanded: false,
@@ -502,29 +514,36 @@ class _CheckInViewState extends State<CheckInView> {
               ),
             ),
             TableModel(
-              data: model.guests[i].fullName,
+              data: model.guests![i].invitationName,
               textStyle: AppTextStyle.bold(context),
             ),
             TableModel(
-              data: '${model.guests[i].guestInfo?.category1 ?? ''}/${model.guests[i].guestInfo?.category2 ?? ''}',
+              // data: '${model.guests![i].guestInfo?.category1 ?? ''}/${model.guests![i].guestInfo?.category2 ?? ''}',
+              data: '${model.guests![i].category}',
+            ),
+            // TableModel(
+            //   data: '${model.guests![i].email}',
+            // ),
+            TableModel(
+              data: '${model.guests![i].whatsapp}',
             ),
             TableModel(
-              data: '${model.guests[i].email}',
-            ),
-            TableModel(
-              data: '${model.guests[i].whatsapp}',
-            ),
-            TableModel(
-              data: model.guests[i].guestInfo?.personInCharge ?? '-',
+              data: model.guests![i].studio,
               textStyle: AppTextStyle.bold(context),
             ),
             TableModel(
-              data: model.guests[i].guestInfo?.seat ?? '-',
+              data: model.guests![i].seat ?? '-',
             ),
             TableModel(
-              // TODO CHANGE TO CHECK IN
-              data: '${model.guests[i].guestInfo?.confirmationStatus.name}',
+              data: '${model.guests![i].showTime}',
             ),
+            // TableModel(
+            //   child: rsvpTableWidgetValue(
+            //     confirmationStatusDropdownItems
+            //         .where((e) => e.value == model.guests![i].confirmationStatus?.name)
+            //         .firstOrNull,
+            //   ),
+            // ),
           ],
         ),
       );

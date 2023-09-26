@@ -78,7 +78,7 @@ List<MenuItemModel> invitationStatusDropdownItems = [
     ),
   ),
   MenuItemModel(
-    value: "WAITING",
+    value: "QUEUE",
     text: 'Pending',
     icon: const Icon(
       Icons.access_time,

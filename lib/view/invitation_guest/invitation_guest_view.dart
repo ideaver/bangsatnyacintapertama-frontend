@@ -1,3 +1,4 @@
+import 'package:bangsatnyacintapertama/widget/atom/app_progress_indicator.dart';
 import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,16 +9,13 @@ import '../../app/service/locator/service_locator.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_sizes.dart';
 import '../../app/theme/app_text_style.dart';
-import '../../app/utility/date_formatter.dart';
 import '../../model/menu_item_model.dart';
 import '../../model/table_model.dart';
 import '../../view_model/guest_invitation_view_model.dart';
 import '../../widget/atom/app_card_container.dart';
 import '../../widget/atom/app_checkbox.dart';
-import '../../widget/atom/app_dialog.dart';
 import '../../widget/atom/app_dropdown.dart';
 import '../../widget/atom/app_icon_button.dart';
-import '../../widget/atom/app_snackbar.dart';
 import '../../widget/atom/app_table.dart';
 import '../../widget/atom/app_text_button.dart';
 import '../../widget/atom/app_text_field.dart';
@@ -40,51 +38,55 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
   void initState() {
     final guestInvitationViewModel = locator<GuestInvitationViewModel>();
 
-    headerData = [
-      TableModel(
-        expanded: false,
-        child: AppCheckbox(
-          value: false,
-          fillColor: AppColors.primary,
-          padding: const EdgeInsets.only(left: AppSizes.padding / 2),
-          onChanged: guestInvitationViewModel.onSelectAll,
-        ),
-      ),
-      TableModel(
-        data: 'Nama',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'Kategori',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'Email',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'WhatsApp',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'PIC',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'Seat',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'Undangan',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-      TableModel(
-        data: 'RSVP',
-        textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
-      ),
-    ];
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      headerData = [
+        TableModel(
+          expanded: false,
+          child: AppCheckbox(
+            value: false,
+            fillColor: AppColors.primary,
+            padding: const EdgeInsets.only(left: AppSizes.padding / 2),
+            onChanged: guestInvitationViewModel.onSelectAll,
+          ),
+        ),
+        TableModel(
+          data: 'Nama',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
+          data: 'Kategori',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        // TableModel(
+        //   data: 'Email',
+        //   textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        // ),
+        TableModel(
+          data: 'WhatsApp',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
+          data: 'Studio',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
+          data: 'Seat',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
+          data: 'Show Time',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
+          data: 'RSVP',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
+          data: 'Invitation Status',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+      ];
+
       guestInvitationViewModel.initInvitationView();
     });
     super.initState();
@@ -378,8 +380,12 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
         ],
         onChanged: (value) {
           model.selectedStatus = value as MenuItemModel;
-          model.confirmationStatus =
-              Enum$ConfirmationStatus.values.where((e) => e.name == model.selectedAction?.value).first;
+
+          if (Enum$ConfirmationStatus.values.where((e) => e.name == model.selectedAction?.value).isNotEmpty) {
+            model.confirmationStatus =
+                Enum$ConfirmationStatus.values.where((e) => e.name == model.selectedAction?.value).first;
+          }
+
           setState(() {});
         },
       );
@@ -478,25 +484,25 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
         backgroundColor: AppColors.baseLv7,
         borderRadius: AppSizes.radius,
         onPressed: () {
-          final navigator = Navigator.of(context);
-          if (model.selectedGuests.isEmpty) {
-            AppSnackbar.show(navigator, title: "Pilih data terlebih dahulu");
-            return;
-          }
+          // final navigator = Navigator.of(context);
+          // if (model.selectedGuests.isEmpty) {
+          //   AppSnackbar.show(navigator, title: "Pilih data terlebih dahulu");
+          //   return;
+          // }
 
-          AppDialog.show(
-            navigator,
-            title: "Hapus Data",
-            text:
-                "Apa anda yakin ingin menghapus ${model.selectedGuests.length} data ini?\nAnda tidak dapat memulihkan data yang telah dihapus!",
-            rightButtonText: "Hapus (${model.selectedGuests.length})",
-            leftButtonText: "Batal",
-            rightButtonTextColor: AppColors.red,
-            onTapRightButton: () {
-              navigator.pop();
-              model.deleteGuestData(navigator);
-            },
-          );
+          // AppDialog.show(
+          //   navigator,
+          //   title: "Hapus Data",
+          //   text:
+          //       "Apa anda yakin ingin menghapus ${model.selectedGuests.length} data ini?\nAnda tidak dapat memulihkan data yang telah dihapus!",
+          //   rightButtonText: "Hapus (${model.selectedGuests.length})",
+          //   leftButtonText: "Batal",
+          //   rightButtonTextColor: AppColors.red,
+          //   onTapRightButton: () {
+          //     navigator.pop();
+          //     model.deleteGuestData(navigator);
+          //   },
+          // );
         },
       );
     });
@@ -504,6 +510,15 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
 
   Widget table() {
     return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
+      if (model.guests == null) {
+        return const Center(
+          child: Padding(
+            padding: EdgeInsets.all(AppSizes.padding),
+            child: AppProgressIndicator(),
+          ),
+        );
+      }
+
       return AppTable(
         borderRadius: AppSizes.radius,
         tableBorderColor: AppColors.baseLv6,
@@ -527,7 +542,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
         maxLines: 2,
         headerData: headerData,
         data: List.generate(
-          model.guests.length,
+          model.guests!.length,
           (i) => [
             TableModel(
               expanded: false,
@@ -541,34 +556,38 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
               ),
             ),
             TableModel(
-              data: model.guests[i].fullName,
+              data: model.guests![i].invitationName,
               textStyle: AppTextStyle.bold(context),
             ),
             TableModel(
-              data: '${model.guests[i].guestInfo?.category1 ?? ''}/${model.guests[i].guestInfo?.category2 ?? ''}',
+              // data: '${model.guests![i].guestInfo?.category1 ?? ''}/${model.guests![i].guestInfo?.category2 ?? ''}',
+              data: model.guests![i].category ?? '-',
+            ),
+            // TableModel(
+            //   data: '${model.guests![i].email}',
+            // ),
+            TableModel(
+              data: '${model.guests![i].whatsapp ?? '-'}',
             ),
             TableModel(
-              data: '${model.guests[i].email}',
-            ),
-            TableModel(
-              data: '${model.guests[i].whatsapp}',
-            ),
-            TableModel(
-              data: model.guests[i].guestInfo?.personInCharge ?? '-',
+              data: model.guests![i].studio,
               textStyle: AppTextStyle.bold(context),
             ),
             TableModel(
-              data: model.guests[i].guestInfo?.seat ?? '-',
+              data: model.guests![i].seat ?? '-',
             ),
             TableModel(
-              data: '${model.guests[i].guestInfo?.confirmationStatus.name}',
+              data: model.guests![i].showTime ?? '-',
             ),
             TableModel(
               child: rsvpTableWidgetValue(
                 confirmationStatusDropdownItems
-                    .where((e) => e.value == model.guests[i].guestInfo?.confirmationStatus.name)
+                    .where((e) => e.value == model.guests![i].confirmationStatus?.name)
                     .firstOrNull,
               ),
+            ),
+            TableModel(
+              data: model.guests![i].whatsappStatuses?.firstOrNull?.status.name ?? '-',
             ),
           ],
         ),
@@ -589,18 +608,19 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
           Padding(
             padding: const EdgeInsets.only(left: AppSizes.padding / 2),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  data?.text ?? '',
+                  data?.text ?? '-',
                   style: AppTextStyle.semiBold(context),
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: AppSizes.padding / 4),
-                Text(
-                  DateFormatter.slashDate(DateTime.now().toIso8601String()),
-                  style: AppTextStyle.semiBold(context, fontSize: 12, color: AppColors.baseLv4),
-                  overflow: TextOverflow.ellipsis,
-                ),
+                // const SizedBox(height: AppSizes.padding / 4),
+                // Text(
+                //   DateFormatter.slashDate(DateTime.now().toIso8601String()),
+                //   style: AppTextStyle.semiBold(context, fontSize: 12, color: AppColors.baseLv4),
+                //   overflow: TextOverflow.ellipsis,
+                // ),
               ],
             ),
           ),
