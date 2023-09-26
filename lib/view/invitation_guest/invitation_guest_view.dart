@@ -139,6 +139,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
 
   Widget compactBodyLayout() {
     return SingleChildScrollView(
+      controller: scrollController,
       padding: const EdgeInsets.all(AppSizes.padding),
       child: Column(
         children: [
@@ -156,6 +157,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
 
   Widget wideBodyLayout() {
     return SingleChildScrollView(
+      controller: scrollController,
       padding: const EdgeInsets.all(AppSizes.padding),
       child: Column(
         children: [

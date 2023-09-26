@@ -181,6 +181,7 @@ class SideBarState extends State<SideBar> {
             height: !isExpand ? 25 : 40,
             child: const AppImage(
               image: randomImage,
+              borderRadius: 100,
             ),
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:bangsatnyacintapertama/app/asset/app_assets.dart';
+import 'package:bangsatnyacintapertama/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 import '../../app/theme/app_sizes.dart';
@@ -61,6 +62,7 @@ class CirclesBackground extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           AppImage(
+            backgroundColor: AppColors.primaryLv8,
             image: AppAssets.emptyPlaceholder,
             imgProvider: ImgProvider.assetImage,
             width: 150,
@@ -71,6 +73,7 @@ class CirclesBackground extends StatelessWidget {
             bottom: 296,
             left: 278 + gapImage,
             child: AppImage(
+              backgroundColor: AppColors.primaryLv8,
               image: AppAssets.emptyPlaceholder,
               imgProvider: ImgProvider.assetImage,
               width: 95,
@@ -82,6 +85,7 @@ class CirclesBackground extends StatelessWidget {
             top: 257,
             left: 278 + gapImage,
             child: AppImage(
+              backgroundColor: AppColors.primaryLv8,
               image: AppAssets.emptyPlaceholder,
               imgProvider: ImgProvider.assetImage,
               width: 112,
@@ -93,6 +97,7 @@ class CirclesBackground extends StatelessWidget {
             bottom: 54,
             right: 255 + gapImage,
             child: AppImage(
+              backgroundColor: AppColors.primaryLv8,
               image: AppAssets.emptyPlaceholder,
               imgProvider: ImgProvider.assetImage,
               width: 70,
@@ -104,6 +109,7 @@ class CirclesBackground extends StatelessWidget {
             right: 278 + gapImage,
             bottom: 285,
             child: AppImage(
+              backgroundColor: AppColors.primaryLv8,
               image: AppAssets.emptyPlaceholder,
               imgProvider: ImgProvider.assetImage,
               width: 89,
@@ -115,6 +121,7 @@ class CirclesBackground extends StatelessWidget {
             bottom: 329,
             left: 183 + gapImage,
             child: AppImage(
+              backgroundColor: AppColors.primaryLv8,
               image: AppAssets.emptyPlaceholder,
               imgProvider: ImgProvider.assetImage,
               width: 36,
@@ -126,6 +133,7 @@ class CirclesBackground extends StatelessWidget {
             bottom: 195,
             left: 278 + gapImage,
             child: AppImage(
+              backgroundColor: AppColors.primaryLv8,
               image: AppAssets.emptyPlaceholder,
               imgProvider: ImgProvider.assetImage,
               width: 48,
@@ -137,6 +145,7 @@ class CirclesBackground extends StatelessWidget {
             bottom: 48,
             right: 107 + gapImage,
             child: AppImage(
+              backgroundColor: AppColors.primaryLv8,
               image: AppAssets.emptyPlaceholder,
               imgProvider: ImgProvider.assetImage,
               width: 48,
