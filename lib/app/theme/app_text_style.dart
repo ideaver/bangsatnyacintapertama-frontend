@@ -33,17 +33,14 @@ class AppTextStyle {
         const TextStyle();
   }
 
-  static TextStyle medium(
-    BuildContext context, {
-    double? fontSize,
-    Color? color,
-    double? height,
-  }) {
+  static TextStyle medium(BuildContext context,
+      {double? fontSize, Color? color, double? height, TextDecoration? decoration}) {
     return Theme.of(context).textTheme.bodyLarge?.copyWith(
               fontSize: fontSize,
               fontWeight: FontWeight.w500,
               color: color,
               height: height,
+              decoration: decoration,
             ) ??
         const TextStyle();
   }

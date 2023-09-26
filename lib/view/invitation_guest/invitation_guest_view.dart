@@ -1,6 +1,7 @@
 import 'package:bangsatnyacintapertama/widget/atom/app_progress_indicator.dart';
 import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:flutter/material.dart';
+import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
 
@@ -83,6 +84,10 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
         ),
         TableModel(
           data: 'Invitation Status',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
+        TableModel(
+          data: 'Invitation Image',
           textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
         ),
       ];
@@ -588,6 +593,33 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             ),
             TableModel(
               data: model.guests![i].whatsappStatuses?.firstOrNull?.status.name ?? '-',
+            ),
+            TableModel(
+              child: model.guests![i].invitationImage == null || model.guests![i].invitationImage?.path == null
+                  ? const SizedBox.shrink()
+                  : InkWell(
+                      onTap: () async {
+                        // ImageDownloader.download(
+                        //   context,
+                        //   model.guests![i].invitationImage?.path,
+                        //   model.guests![i].invitationName,
+                        // );
+                        await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
+                      },
+                      child: Container(
+                        color: AppColors.transparent,
+                        padding: const EdgeInsets.all(AppSizes.padding / 2),
+                        child: Text(
+                          "Download Image",
+                          style: AppTextStyle.medium(
+                            context,
+                            fontSize: 12,
+                            color: AppColors.primary,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ),
             ),
           ],
         ),
