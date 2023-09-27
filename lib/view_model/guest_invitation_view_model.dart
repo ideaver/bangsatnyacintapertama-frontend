@@ -69,6 +69,9 @@ class GuestInvitationViewModel extends ChangeNotifier {
       notifyListeners();
     }
 
+    countTotalGuest();
+    counttotalGuestInvitationSent();
+    counttotalGuestInvitationFailedSent();
     getAllGuests(contains: searchController.text);
   }
 

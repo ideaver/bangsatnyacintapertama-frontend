@@ -68,6 +68,9 @@ class CheckInViewModel extends ChangeNotifier {
       notifyListeners();
     }
 
+    countTotalCheckIn();
+    counttotalUnCheckIn();
+    counttotalEmptySeat();
     getAllGuests(contains: searchController.text);
   }
 
