@@ -50,6 +50,7 @@ dependencies:
   syncfusion_flutter_charts: ^22.2.5
   image_downloader_web: ^2.0.2
   path_provider: ^2.0.12
+  file_picker: ^5.5.0
   # alvamind_library_two:
   #   path: ../../satujuta/alvamind_two_library_frontend
   bangsatnyacintapertama_graphql_client: 

@@ -1,5 +1,6 @@
 import 'package:bangsatnyacintapertama/view_model/check_in_view_model.dart';
 import 'package:bangsatnyacintapertama/view_model/dashboard_view_model.dart';
+import 'package:bangsatnyacintapertama/view_model/guest_add_edit_view.dart';
 import 'package:bangsatnyacintapertama/view_model/guest_invitation_view_model.dart';
 import 'package:bangsatnyacintapertama/view_model/main_view_model.dart';
 import 'package:bangsatnyacintapertama_graphql_client/graphql_service.dart';
@@ -67,6 +68,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => locator<DashboardViewModel>()),
         ChangeNotifierProvider(create: (_) => locator<GuestInvitationViewModel>()),
         ChangeNotifierProvider(create: (_) => locator<CheckInViewModel>()),
+        ChangeNotifierProvider(create: (_) => locator<GuestAddEditViewModel>()),
       ],
       child: MaterialApp(
         title: 'Bangsatnya Cinta Pertama',

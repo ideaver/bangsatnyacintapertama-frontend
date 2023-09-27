@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../app/theme/app_sizes.dart';
-
 class CirclesBackground extends StatelessWidget {
   final Widget body;
 
@@ -50,7 +48,7 @@ class CirclesBackground extends StatelessWidget {
   }
 
   Widget backgroundReferral() {
-    const double gapImage = AppSizes.padding * 3;
+    // const double gapImage = AppSizes.padding * 3;
 
     return const SizedBox(
       width: 450,

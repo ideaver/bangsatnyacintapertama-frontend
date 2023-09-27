@@ -1,6 +1,10 @@
 import 'package:bangsatnyacintapertama/app/utility/console_log.dart';
+import 'package:bangsatnyacintapertama/app/utility/external_launcher.dart';
+import 'package:bangsatnyacintapertama/view/invitation_guest/add_edit_guest_dialog.dart';
+import 'package:bangsatnyacintapertama/widget/atom/app_button.dart';
 import 'package:bangsatnyacintapertama/widget/atom/app_progress_indicator.dart';
 import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
@@ -10,14 +14,15 @@ import '../../app/service/locator/service_locator.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_sizes.dart';
 import '../../app/theme/app_text_style.dart';
-import '../../app/utility/image_downloader.dart';
 import '../../model/menu_item_model.dart';
 import '../../model/table_model.dart';
 import '../../view_model/guest_invitation_view_model.dart';
 import '../../widget/atom/app_card_container.dart';
 import '../../widget/atom/app_checkbox.dart';
+import '../../widget/atom/app_dialog.dart';
 import '../../widget/atom/app_dropdown.dart';
 import '../../widget/atom/app_icon_button.dart';
+import '../../widget/atom/app_snackbar.dart';
 import '../../widget/atom/app_table.dart';
 import '../../widget/atom/app_text_button.dart';
 import '../../widget/atom/app_text_field.dart';
@@ -34,20 +39,22 @@ class InvitationGuestView extends StatefulWidget {
 }
 
 class _InvitationGuestViewState extends State<InvitationGuestView> {
+  final guestInvitationViewModel = locator<GuestInvitationViewModel>();
+
   ScrollController scrollController = ScrollController();
 
-  final searchController = TextEditingController();
+  // final searchController = TextEditingController();
   List<TableModel> headerData = [];
 
   @override
   void initState() {
-    final guestInvitationViewModel = locator<GuestInvitationViewModel>();
+    guestInvitationViewModel.searchController = TextEditingController();
 
     scrollController.addListener(() {
       if (scrollController.offset == scrollController.position.maxScrollExtent) {
         guestInvitationViewModel.getAllGuests(
           skip: guestInvitationViewModel.guests!.length,
-          contains: searchController.text,
+          contains: guestInvitationViewModel.searchController.text,
         );
       }
     });
@@ -56,12 +63,14 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
       headerData = [
         TableModel(
           expanded: false,
-          child: AppCheckbox(
-            value: false,
-            fillColor: AppColors.primary,
-            padding: const EdgeInsets.only(left: AppSizes.padding / 2),
-            onChanged: guestInvitationViewModel.onSelectAll,
-          ),
+          child: Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
+            return AppCheckbox(
+              value: model.selectedGuests.length == model.guests?.length,
+              fillColor: AppColors.primary,
+              padding: const EdgeInsets.only(left: AppSizes.padding / 2),
+              onChanged: guestInvitationViewModel.onSelectAll,
+            );
+          }),
         ),
         TableModel(
           data: 'Nama',
@@ -103,6 +112,11 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
           data: 'Invitation Image',
           textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
         ),
+        TableModel(
+          expanded: false,
+          data: 'Edit Data',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
       ];
 
       guestInvitationViewModel.initInvitationView();
@@ -112,7 +126,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
 
   @override
   void dispose() {
-    searchController.dispose();
+    guestInvitationViewModel.searchController.dispose();
     super.dispose();
   }
 
@@ -221,8 +235,16 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
           ],
         ),
         buttonText: "Upload Tamu",
-        onTapButton: () {
-          // TODO
+        onTapButton: () async {
+          final navigator = Navigator.of(context);
+
+          FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+          cl('path = $result?.files.single.path');
+
+          if (result?.files.single.path != null) {
+            await model.uploadGuestInvitationFile(result!.files.single.path!, navigator);
+          }
         },
       );
     });
@@ -310,7 +332,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
                     children: [
                       Expanded(child: invitedGuestStatusDropDown()),
                       const SizedBox(width: AppSizes.padding / 1.5),
-                      Expanded(child: actionDropDown()),
+                      Expanded(child: sortDropDown()),
                     ],
                   ),
                 ],
@@ -341,7 +363,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             const SizedBox(width: AppSizes.padding / 1.5),
             Expanded(child: invitedGuestStatusDropDown()),
             const SizedBox(width: AppSizes.padding / 1.5),
-            Expanded(child: actionDropDown()),
+            Expanded(child: sortDropDown()),
             const SizedBox(width: AppSizes.padding / 1.5),
             addButton(),
             const SizedBox(width: AppSizes.padding / 1.5),
@@ -425,7 +447,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             model.whatsAppQueueStatus = null;
           }
 
-          model.getAllGuests(contains: searchController.text);
+          model.getAllGuests(contains: model.searchController.text);
           cl(model.confirmationStatus?.name);
 
           // setState(() {});
@@ -434,13 +456,13 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
     });
   }
 
-  Widget actionDropDown() {
+  Widget sortDropDown() {
     return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
       return AppDropDown(
         customButton: AppCardContainer(
           margin: EdgeInsets.zero,
           borderRadius: BorderRadius.circular(100),
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.baseLv7,
           padding: const EdgeInsets.symmetric(
             vertical: AppSizes.padding / 1.5,
             horizontal: AppSizes.padding,
@@ -449,18 +471,53 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Text(
-                  model.selectedAction?.text ?? '',
-                  style: AppTextStyle.semiBold(context, color: AppColors.white),
-                  overflow: TextOverflow.ellipsis,
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.sort,
+                      size: 14,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: AppSizes.padding / 2),
+                        child: Text(
+                          model.selectedSort?.text ?? '',
+                          style: AppTextStyle.semiBold(context),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const Icon(Icons.arrow_drop_down, color: AppColors.white)
+              const Icon(Icons.arrow_drop_down)
             ],
           ),
         ),
+        //  AppCardContainer(
+        //   margin: EdgeInsets.zero,
+        //   borderRadius: BorderRadius.circular(100),
+        //   backgroundColor: AppColors.primary,
+        //   padding: const EdgeInsets.symmetric(
+        //     vertical: AppSizes.padding / 1.5,
+        //     horizontal: AppSizes.padding,
+        //   ),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       Expanded(
+        //         child: Text(
+        //           model.selectedSort?.text ?? '',
+        //           style: AppTextStyle.semiBold(context, color: AppColors.white),
+        //           overflow: TextOverflow.ellipsis,
+        //         ),
+        //       ),
+        //       const Icon(Icons.arrow_drop_down, color: AppColors.white)
+        //     ],
+        //   ),
+        // ),
         items: [
-          ...actionDropdownItems.map(
+          ...guestSortirDropdownItems.map(
             (item) => DropdownMenuItem<MenuItemModel>(
               value: item,
               child: Row(
@@ -479,8 +536,25 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
           ),
         ],
         onChanged: (value) {
-          model.selectedAction = value as MenuItemModel;
-          setState(() {});
+          model.selectedSort = value as MenuItemModel;
+
+          if (model.selectedSort!.text!.contains('Name')) {
+            if (model.selectedSort!.text!.contains('Ascending')) {
+              model.invitationNameSortOrder = Enum$SortOrder.asc;
+            } else {
+              model.invitationNameSortOrder = Enum$SortOrder.desc;
+            }
+          }
+
+          if (model.selectedSort!.text!.contains('Seat')) {
+            if (model.selectedSort!.text!.contains('Ascending')) {
+              model.seatSortOrder = Enum$SortOrder.asc;
+            } else {
+              model.seatSortOrder = Enum$SortOrder.desc;
+            }
+          }
+
+          model.getAllGuests();
         },
       );
     });
@@ -489,7 +563,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
   Widget searchField() {
     return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
       return AppTextField(
-        controller: searchController,
+        controller: model.searchController,
         type: AppTextFieldType.search,
         showSuffixButton: false,
         prefixIcon: const Icon(Icons.search),
@@ -497,7 +571,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
         padding: const EdgeInsets.symmetric(horizontal: AppSizes.padding / 2),
         hintText: 'Cari...',
         onEditingComplete: () {
-          model.getAllGuests(contains: searchController.text);
+          model.getAllGuests(contains: model.searchController.text);
         },
         onChanged: (value) {
           if (value.length % 3 == 0) {
@@ -517,9 +591,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
         backgroundColor: AppColors.baseLv7,
         borderRadius: AppSizes.radius,
         onPressed: () async {
-          model.guests = null;
-          model.notifyListeners();
-          model.getAllGuests(contains: searchController.text);
+          model.refreshData(reset: true);
         },
       );
     });
@@ -532,8 +604,15 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
         iconSize: 22,
         backgroundColor: AppColors.baseLv7,
         borderRadius: AppSizes.radius,
-        onPressed: () {
-          // TODO
+        onPressed: () async {
+          final navigator = Navigator.of(context);
+          await AppDialog.show(
+            navigator,
+            title: 'Tambah Data',
+            child: const AddEditGuestDialog(),
+          );
+
+          model.refreshData();
         },
       );
     });
@@ -541,32 +620,40 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
 
   Widget deleteButton() {
     return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
-      return AppIconButton(
-        icon: Icons.delete_forever_outlined,
-        iconSize: 22,
-        backgroundColor: AppColors.baseLv7,
-        borderRadius: AppSizes.radius,
-        onPressed: () {
-          // final navigator = Navigator.of(context);
-          // if (model.selectedGuests.isEmpty) {
-          //   AppSnackbar.show(navigator, title: "Pilih data terlebih dahulu");
-          //   return;
-          // }
+      return Opacity(
+        opacity: model.selectedGuests.isEmpty ? 0.5 : 1.0,
+        child: AppIconButton(
+          icon: Icons.delete_forever_outlined,
+          iconSize: 22,
+          backgroundColor: AppColors.baseLv7,
+          borderRadius: AppSizes.radius,
+          onPressed: () {
+            if (model.selectedGuests.isEmpty) {
+              return;
+            }
 
-          // AppDialog.show(
-          //   navigator,
-          //   title: "Hapus Data",
-          //   text:
-          //       "Apa anda yakin ingin menghapus ${model.selectedGuests.length} data ini?\nAnda tidak dapat memulihkan data yang telah dihapus!",
-          //   rightButtonText: "Hapus (${model.selectedGuests.length})",
-          //   leftButtonText: "Batal",
-          //   rightButtonTextColor: AppColors.red,
-          //   onTapRightButton: () {
-          //     navigator.pop();
-          //     model.deleteGuestData(navigator);
-          //   },
-          // );
-        },
+            final navigator = Navigator.of(context);
+            if (model.selectedGuests.isEmpty) {
+              AppSnackbar.show(navigator, title: "Pilih data terlebih dahulu");
+              return;
+            }
+
+            AppDialog.show(
+              navigator,
+              title: "Hapus Data",
+              text:
+                  "Apa anda yakin ingin menghapus ${model.selectedGuests.length} data ini?\nAnda tidak dapat memulihkan data yang telah dihapus!",
+              rightButtonText: "Hapus (${model.selectedGuests.length})",
+              leftButtonText: "Batal",
+              rightButtonTextColor: AppColors.red,
+              onTapRightButton: () async {
+                navigator.pop();
+                await model.deleteGuestData(navigator);
+                model.refreshData();
+              },
+            );
+          },
+        ),
       );
     });
   }
@@ -607,7 +694,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
         maxLines: 2,
         headerData: headerData,
         // onLoadMore: () {
-        //   model.getAllGuests(skip: model.guests!.length, contains: searchController.text);
+        //   model.getAllGuests(skip: model.guests!.length, contains: model.searchController.text);
         // },
         data: List.generate(
           model.guests!.length,
@@ -615,7 +702,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             TableModel(
               expanded: false,
               child: AppCheckbox(
-                value: false,
+                value: model.selectedGuests.contains(model.guests![i]),
                 fillColor: AppColors.primary,
                 padding: const EdgeInsets.only(left: AppSizes.padding / 2),
                 onChanged: (val) {
@@ -666,20 +753,21 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
                   ? const SizedBox.shrink()
                   : InkWell(
                       onTap: () async {
-                        await ImageDownloader.download(
-                          context,
-                          // "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png",
-                          model.guests![i].invitationImage?.path,
-                          model.guests![i].invitationName,
-                        );
+                        // await ImageDownloader.download(
+                        //   context,
+                        //   // "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png",
+                        //   model.guests![i].invitationImage?.path,
+                        //   model.guests![i].invitationName,
+                        // );
                         cl(model.guests![i].invitationImage?.path);
+                        ExternalLauncher.openUrl(model.guests![i].invitationImage?.path ?? '');
                         // await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
                         // await WebImageDownloader.downloadImageFromWeb(
                         //     "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png");
                       },
                       child: Container(
                         color: AppColors.transparent,
-                        padding: const EdgeInsets.all(AppSizes.padding / 2),
+                        padding: const EdgeInsets.all(AppSizes.padding),
                         child: Text(
                           "Download Image",
                           style: AppTextStyle.medium(
@@ -691,6 +779,31 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
                         ),
                       ),
                     ),
+            ),
+            TableModel(
+              expanded: false,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSizes.padding),
+                child: AppButton(
+                  text: "Edit",
+                  leftIcon: Icons.edit,
+                  fontSize: 12,
+                  iconColor: AppColors.base,
+                  textColor: AppColors.base,
+                  buttonColor: AppColors.baseLv7,
+                  padding: const EdgeInsets.all(AppSizes.padding / 3),
+                  onTap: () async {
+                    final navigator = Navigator.of(context);
+                    await AppDialog.show(
+                      navigator,
+                      title: 'Edit Data',
+                      child: AddEditGuestDialog(
+                        guest: model.guests![i],
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
           ],
         ),

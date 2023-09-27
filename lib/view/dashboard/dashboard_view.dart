@@ -70,11 +70,11 @@ class _DashboardViewState extends State<DashboardView> {
           const SizedBox(height: AppSizes.padding),
           chart3(),
           const SizedBox(height: AppSizes.padding),
-          guestTotalCard(),
+          sendedTotalCard(),
           const SizedBox(height: AppSizes.padding),
-          presentTotalCard(),
+          failedSentTotalCard(),
           const SizedBox(height: AppSizes.padding),
-          absentTotalCard(),
+          unRSVPTotalCard(),
         ],
       ),
     );
@@ -107,11 +107,11 @@ class _DashboardViewState extends State<DashboardView> {
           const SizedBox(height: AppSizes.padding),
           Row(
             children: [
-              Expanded(child: guestTotalCard()),
+              Expanded(child: sendedTotalCard()),
               const SizedBox(width: AppSizes.padding),
-              Expanded(child: presentTotalCard()),
+              Expanded(child: failedSentTotalCard()),
               const SizedBox(width: AppSizes.padding),
-              Expanded(child: absentTotalCard()),
+              Expanded(child: unRSVPTotalCard()),
             ],
           )
         ],
@@ -200,24 +200,26 @@ class _DashboardViewState extends State<DashboardView> {
   Widget chart1() {
     return Consumer<DashboardViewModel>(builder: (context, model, _) {
       return chartWidget(
-        title: "UNDANGAN",
+        title: "KEHADIRAN",
         centerTitle: 'TOTAL',
-        centersubtitle: '${model.totalGuestInvitationSent}',
+        centersubtitle: '${model.totalGuestConfirmed + model.totalGuestInvitationUnconfirmed}',
         subtitle: "Persentase undangan yang telah konfirmasi dengan yang belum",
         chartData: [
-          ChartData('Aktif', model.totalGuestConfirmed.toDouble(), AppColors.primary),
-          ChartData('Tidak Aktif', model.totalGuestInvitationUnconfirmed.toDouble(), AppColors.primaryLv7),
+          ChartData('Telah Konfirmasi', model.totalGuestConfirmed.toDouble(), AppColors.primary),
+          ChartData('Belum RSVP', model.totalGuestInvitationUnconfirmed.toDouble(), AppColors.primaryLv7),
         ],
         legends: [
           ChartLegendModel(
             title: "Telah Konfirmasi",
             color: AppColors.primary,
-            value: '${model.totalGuestConfirmed / model.totalGuestInvitationSent * 100}%',
+            value:
+                '${(model.totalGuestConfirmed / (model.totalGuestConfirmed + model.totalGuestInvitationUnconfirmed) * 100).toStringAsFixed(0)}%',
           ),
           ChartLegendModel(
             title: "Belum RSVP",
             color: AppColors.primaryLv7,
-            value: '${model.totalGuestInvitationUnconfirmed / model.totalGuestInvitationSent * 100}%',
+            value:
+                '${(model.totalGuestInvitationUnconfirmed / (model.totalGuestConfirmed + model.totalGuestInvitationUnconfirmed) * 100).toStringAsFixed(0)}%',
           ),
         ],
       );
@@ -227,24 +229,26 @@ class _DashboardViewState extends State<DashboardView> {
   Widget chart2() {
     return Consumer<DashboardViewModel>(builder: (context, model, _) {
       return chartWidget(
-        title: "KONTAK",
+        title: "PENGIRIMAN",
         centerTitle: 'TOTAL',
-        centersubtitle: '${model.totalGuestInvitationSent}',
-        subtitle: "Persentase undangan yang telah konfirmasi dengan yang belum",
+        centersubtitle: '${model.totalGuestInvitationSent + model.totalGuestInvitationFailedSent}',
+        subtitle: "Persentase undangan yang telah terkirim dengan yang gagal",
         chartData: [
-          ChartData('Aktif', model.totalGuestConfirmed.toDouble(), AppColors.primary),
-          ChartData('Tidak Aktif', model.totalGuestInvitationUnconfirmed.toDouble(), AppColors.primaryLv7),
+          ChartData('Terkirim', model.totalGuestInvitationSent.toDouble(), AppColors.greenLv1),
+          ChartData('Gagal Terkirim', model.totalGuestInvitationFailedSent.toDouble(), AppColors.greenLv7),
         ],
         legends: [
           ChartLegendModel(
-            title: "Email",
+            title: "Terkirim",
             color: AppColors.greenLv1,
-            value: '${model.totalGuestConfirmed / model.totalGuestInvitationSent * 100}%',
+            value:
+                '${(model.totalGuestInvitationSent / (model.totalGuestInvitationSent + model.totalGuestInvitationFailedSent) * 100).toStringAsFixed(0)}%',
           ),
           ChartLegendModel(
-            title: "No. WhatsApp",
+            title: "Gagal Terkirim",
             color: AppColors.greenLv7,
-            value: '${model.totalGuestInvitationUnconfirmed / model.totalGuestInvitationSent * 100}%',
+            value:
+                '${(model.totalGuestInvitationFailedSent / (model.totalGuestInvitationSent + model.totalGuestInvitationFailedSent) * 100).toStringAsFixed(0)}%',
           ),
         ],
       );
@@ -254,24 +258,26 @@ class _DashboardViewState extends State<DashboardView> {
   Widget chart3() {
     return Consumer<DashboardViewModel>(builder: (context, model, _) {
       return chartWidget(
-        title: "UNDANGAN",
+        title: "PENOLAKAN",
         centerTitle: 'TOTAL',
-        centersubtitle: '${model.totalGuestInvitationSent}',
-        subtitle: "Persentase undangan yang telah konfirmasi dengan yang belum",
+        centersubtitle: '${model.totalGuestRejected + model.totalGuestConfirmed}',
+        subtitle: "Persentase undangan yang ditolak dengan yang diterima (dikonfirmasi)",
         chartData: [
-          ChartData('Aktif', model.totalGuestConfirmed.toDouble(), AppColors.primary),
-          ChartData('Tidak Aktif', model.totalGuestInvitationUnconfirmed.toDouble(), AppColors.primaryLv7),
+          ChartData('Ditolak', model.totalGuestRejected.toDouble(), AppColors.red),
+          ChartData('Diterima', model.totalGuestConfirmed.toDouble(), AppColors.redLv7),
         ],
         legends: [
           ChartLegendModel(
-            title: "Telah Konfirmasi",
-            color: AppColors.tangerine,
-            value: '${model.totalGuestConfirmed / model.totalGuestInvitationSent * 100}%',
+            title: "Telah Ditolak",
+            color: AppColors.red,
+            value:
+                '${(model.totalGuestRejected / (model.totalGuestRejected + model.totalGuestConfirmed) * 100).toStringAsFixed(0)}%',
           ),
           ChartLegendModel(
-            title: "Belum RSVP",
-            color: AppColors.tangerine.withOpacity(0.12),
-            value: '${model.totalGuestInvitationUnconfirmed / model.totalGuestInvitationSent * 100}%',
+            title: "Telah Dikonfirmasi",
+            color: AppColors.redLv7,
+            value:
+                '${(model.totalGuestConfirmed / (model.totalGuestRejected + model.totalGuestConfirmed) * 100).toStringAsFixed(0)}%',
           ),
         ],
       );

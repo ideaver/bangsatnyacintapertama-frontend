@@ -45,7 +45,10 @@ class AppColors {
   static const Color sea = Color(0xFF08CCCC);
   static const Color yellow = Color(0xFFFFB800);
   static const Color pink = Color(0xFFFF61D3);
+
+  // Red
   static const Color red = Color(0xFFFE1A59);
+  static const Color redLv7 = Color(0xFFffd9e3);
 
   // Base subcolors
   static const Color baseLv2 = Color(0xFF23262F);

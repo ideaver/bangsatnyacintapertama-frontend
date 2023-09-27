@@ -150,3 +150,38 @@ List<MenuItemModel> checkInSortirDropdownItems = [
     ),
   ),
 ];
+
+List<MenuItemModel> guestSortirDropdownItems = [
+  MenuItemModel(
+    value: Enum$SortOrder.asc.name,
+    text: 'Name Ascending',
+    icon: const Icon(
+      Icons.person_outline,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: Enum$SortOrder.desc.name,
+    text: 'Name Descending',
+    icon: const Icon(
+      Icons.person_outline,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: Enum$SortOrder.asc.name,
+    text: 'Seat Ascending',
+    icon: const Icon(
+      Icons.chair,
+      size: 14,
+    ),
+  ),
+  MenuItemModel(
+    value: Enum$SortOrder.desc.name,
+    text: 'Seat Descending',
+    icon: const Icon(
+      Icons.chair,
+      size: 14,
+    ),
+  ),
+];

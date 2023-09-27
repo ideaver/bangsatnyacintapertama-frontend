@@ -56,7 +56,7 @@ class AppFullDoughnutBarChart extends StatelessWidget {
           pointColorMapper: (ChartData data, _) => data.color,
           startAngle: 0,
           endAngle: 360,
-          dataLabelMapper: (ChartData data, _) => '${data.y}%',
+          dataLabelMapper: (ChartData data, _) => '${data.y}',
           dataLabelSettings: DataLabelSettings(
             isVisible: isVisible,
             textStyle: AppTextStyle.bold(
