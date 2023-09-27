@@ -5,7 +5,6 @@ import 'package:bangsatnyacintapertama/widget/atom/app_progress_indicator.dart';
 import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
 
@@ -359,6 +358,8 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
       Breakpoints(
         xs: Row(
           children: [
+            downloadButton(),
+            const SizedBox(width: AppSizes.padding / 1.5),
             addButton(),
             const SizedBox(width: AppSizes.padding / 1.5),
             deleteButton(),
@@ -373,6 +374,8 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             Expanded(child: invitedGuestStatusDropDown()),
             const SizedBox(width: AppSizes.padding / 1.5),
             Expanded(child: sortDropDown()),
+            const SizedBox(width: AppSizes.padding / 1.5),
+            downloadButton(),
             const SizedBox(width: AppSizes.padding / 1.5),
             addButton(),
             const SizedBox(width: AppSizes.padding / 1.5),
@@ -606,6 +609,35 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
     });
   }
 
+  Widget downloadButton() {
+    return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
+      return Opacity(
+        opacity: model.selectedGuests.isEmpty ? 0.5 : 1.0,
+        child: AppIconButton(
+          icon: Icons.file_download_outlined,
+          iconSize: 22,
+          backgroundColor: AppColors.baseLv7,
+          borderRadius: AppSizes.radius,
+          onPressed: () async {
+            if (model.selectedGuests.isEmpty) {
+              return;
+            }
+
+            for (var data in model.selectedGuests) {
+              await ImageDownloader.download(
+                context,
+                data.invitationImage?.path,
+                data.invitationName,
+              );
+            }
+
+            model.refreshData();
+          },
+        ),
+      );
+    });
+  }
+
   Widget addButton() {
     return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
       return AppIconButton(
@@ -749,33 +781,54 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             TableModel(
               child: model.guests![i].invitationImage == null || model.guests![i].invitationImage?.path == null
                   ? const SizedBox.shrink()
-                  : InkWell(
-                      onTap: () async {
-                        ImageDownloader.download(
-                          context,
-                          // "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png",
-                          model.guests![i].invitationImage?.path,
-                          model.guests![i].invitationName,
-                        );
-                        cl(model.guests![i].invitationImage?.path);
-                        // ExternalLauncher.openUrl(model.guests![i].invitationImage?.path ?? '');
-                        await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
-                        // await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
-                      },
-                      child: Container(
-                        color: AppColors.transparent,
-                        padding: const EdgeInsets.all(AppSizes.padding),
-                        child: Text(
-                          "Download Image",
-                          style: AppTextStyle.medium(
+                  : Padding(
+                      padding: const EdgeInsets.all(AppSizes.padding),
+                      child: AppButton(
+                        text: "Download",
+                        leftIcon: Icons.file_download_outlined,
+                        fontSize: 12,
+                        iconColor: AppColors.base,
+                        textColor: AppColors.base,
+                        buttonColor: AppColors.baseLv7,
+                        padding: const EdgeInsets.all(AppSizes.padding / 3),
+                        onTap: () async {
+                          ImageDownloader.download(
                             context,
-                            fontSize: 12,
-                            color: AppColors.primary,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
+                            // "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png",
+                            model.guests![i].invitationImage?.path,
+                            model.guests![i].invitationName,
+                          );
+                          cl(model.guests![i].invitationImage?.path);
+                        },
                       ),
                     ),
+              // : InkWell(
+              //     onTap: () async {
+              //       ImageDownloader.download(
+              //         context,
+              //         // "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png",
+              //         model.guests![i].invitationImage?.path,
+              //         model.guests![i].invitationName,
+              //       );
+              //       cl(model.guests![i].invitationImage?.path);
+              //       // ExternalLauncher.openUrl(model.guests![i].invitationImage?.path ?? '');
+              //       // await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
+              //       // await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
+              //     },
+              //     child: Container(
+              //       color: AppColors.transparent,
+              //       padding: const EdgeInsets.all(AppSizes.padding),
+              //       child: Text(
+              //         "Download Image",
+              //         style: AppTextStyle.medium(
+              //           context,
+              //           fontSize: 12,
+              //           color: AppColors.primary,
+              //           decoration: TextDecoration.underline,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
             ),
             TableModel(
               expanded: false,

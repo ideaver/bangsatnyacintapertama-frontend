@@ -62,6 +62,7 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
         const SizedBox(height: AppSizes.padding / 2),
         Text(
           'Arahkan kamera ke QR Code dan tahan beberapa saat',
+          textAlign: TextAlign.center,
           style: AppTextStyle.medium(
             context,
             fontSize: 14,
@@ -109,35 +110,21 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
         return const SizedBox.shrink();
       }
 
-      if (!model.scannedGuest!.isSuccess) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Gagal',
-              textAlign: TextAlign.center,
-              style: AppTextStyle.bold(
-                context,
-                fontSize: 26,
-                color: AppColors.white,
-              ),
-            ),
-            const SizedBox(height: AppSizes.padding / 2),
-            Text(
-              '${model.scannedGuest?.message}',
-              style: AppTextStyle.medium(
-                context,
-                fontSize: 14,
-                color: AppColors.white,
-              ),
-            ),
-          ],
-        );
-      }
-
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (!model.scannedGuest!.isSuccess) ...[
+            Text(
+              '⚠︎  ${model.scannedGuest?.message}',
+              textAlign: TextAlign.center,
+              style: AppTextStyle.bold(
+                context,
+                fontSize: 16,
+                color: AppColors.red,
+              ),
+            ),
+          ],
+          const SizedBox(height: AppSizes.padding / 4),
           Text(
             model.scannedGuest?.qrData.guest.invitationName ?? '-',
             textAlign: TextAlign.center,
@@ -150,6 +137,7 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
           const SizedBox(height: AppSizes.padding / 2),
           Text(
             'Berhasil Check-In pada ${model.scannedGuest?.qrData.createdAt != null ? DateFormatter.slashDateShortedYearWithClock(model.scannedGuest!.qrData.createdAt) : '-'}',
+            textAlign: TextAlign.center,
             style: AppTextStyle.medium(
               context,
               fontSize: 14,
@@ -159,6 +147,7 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
           const SizedBox(height: AppSizes.padding),
           Text(
             'Seat ${model.scannedGuest?.qrData.guest.seat}',
+            textAlign: TextAlign.center,
             style: AppTextStyle.bold(
               context,
               fontSize: 26,
@@ -168,12 +157,14 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
           const SizedBox(height: AppSizes.padding),
           Text(
             'Studio: ${model.scannedGuest?.qrData.guest.studio}  |  Show Time: ${model.scannedGuest?.qrData.guest.showTime}',
+            textAlign: TextAlign.center,
             style: AppTextStyle.bold(
               context,
               fontSize: 20,
               color: AppColors.white,
             ),
           ),
+          const SizedBox(height: AppSizes.padding),
         ],
       );
     });

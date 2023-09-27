@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bangsatnyacintapertama/app/service/auth/auth_service.dart';
 import 'package:bangsatnyacintapertama_graphql_client/gql_guest_service.dart';
 import 'package:bangsatnyacintapertama_graphql_client/operations/generated/guest_find_many_order_by_qr_code_scan.graphql.dart';
@@ -30,6 +32,8 @@ class CheckInViewModel extends ChangeNotifier {
 
   Query$QrCodeScan$qrCodeScan? scannedGuest;
 
+  Timer? timer;
+
   void resetState() {
     totalCheckIn = 0;
     totalUncheckIn = 0;
@@ -43,6 +47,9 @@ class CheckInViewModel extends ChangeNotifier {
     invitationNameSortOrder = Enum$SortOrder.asc;
     sourceSortOrder = Enum$SortOrder.asc;
     seatSortOrder = Enum$SortOrder.asc;
+
+    timer?.cancel();
+    timer = null;
   }
 
   Future<void> initCheckInView() async {
@@ -142,6 +149,10 @@ class CheckInViewModel extends ChangeNotifier {
     required NavigatorState navigator,
     required String guestId,
   }) async {
+    if (timer != null) {
+      return;
+    }
+
     var res = await GqlGuestService.qrCodeScan(
       userId: AuthService.user!.id,
       guestId: guestId,
@@ -157,6 +168,12 @@ class CheckInViewModel extends ChangeNotifier {
       AppSnackbar.show(navigator, title: "Gagal check-in, silahkan coba lagi");
       cl('[qrCodeScan].error = ${gqlErrorParser(res)}');
     }
+
+    timer = Timer(const Duration(seconds: 2), () {
+      print("Yeah, this line is printed after 2 seconds");
+      timer?.cancel();
+      timer = null;
+    });
 
     notifyListeners();
   }
