@@ -152,44 +152,52 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
   }
 
   Widget compactBodyLayout() {
-    return SingleChildScrollView(
+    return Scrollbar(
       controller: scrollController,
-      padding: const EdgeInsets.all(AppSizes.padding),
-      child: Column(
-        children: [
-          invitedGuestTotalCard(),
-          const SizedBox(height: AppSizes.padding),
-          sendedTotalCard(),
-          const SizedBox(height: AppSizes.padding),
-          failedSentTotalCard(),
-          const SizedBox(height: AppSizes.padding),
-          invitedGuestList(),
-        ],
+      thickness: AppSizes.padding / 1.5,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        padding: const EdgeInsets.all(AppSizes.padding),
+        child: Column(
+          children: [
+            invitedGuestTotalCard(),
+            const SizedBox(height: AppSizes.padding),
+            sendedTotalCard(),
+            const SizedBox(height: AppSizes.padding),
+            failedSentTotalCard(),
+            const SizedBox(height: AppSizes.padding),
+            invitedGuestList(),
+          ],
+        ),
       ),
     );
   }
 
   Widget wideBodyLayout() {
-    return SingleChildScrollView(
+    return Scrollbar(
       controller: scrollController,
-      padding: const EdgeInsets.all(AppSizes.padding),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 300,
-            child: Row(
-              children: [
-                Expanded(child: invitedGuestTotalCard()),
-                const SizedBox(width: AppSizes.padding),
-                Expanded(child: sendedTotalCard()),
-                const SizedBox(width: AppSizes.padding),
-                Expanded(child: failedSentTotalCard()),
-              ],
+      thickness: AppSizes.padding / 1.5,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        padding: const EdgeInsets.all(AppSizes.padding),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 300,
+              child: Row(
+                children: [
+                  Expanded(child: invitedGuestTotalCard()),
+                  const SizedBox(width: AppSizes.padding),
+                  Expanded(child: sendedTotalCard()),
+                  const SizedBox(width: AppSizes.padding),
+                  Expanded(child: failedSentTotalCard()),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: AppSizes.padding),
-          invitedGuestList(),
-        ],
+            const SizedBox(height: AppSizes.padding),
+            invitedGuestList(),
+          ],
+        ),
       ),
     );
   }
@@ -242,8 +250,8 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
 
           cl('path = $result?.files.single.path');
 
-          if (result?.files.single.path != null) {
-            await model.uploadGuestInvitationFile(result!.files.single.path!, navigator);
+          if (result?.files.single.bytes != null) {
+            await model.uploadGuestInvitationFile(result!.files.single.bytes!, navigator);
           }
         },
       );

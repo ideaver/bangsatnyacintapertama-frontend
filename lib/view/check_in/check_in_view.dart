@@ -305,12 +305,12 @@ class _CheckInViewState extends State<CheckInView> {
               Expanded(
                 child: Row(
                   children: [
-                    model.selectedSortir?.icon ?? const SizedBox.shrink(),
+                    model.selectedSort?.icon ?? const SizedBox.shrink(),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(left: AppSizes.padding / 2),
                         child: Text(
-                          model.selectedSortir?.text ?? '',
+                          model.selectedSort?.text ?? '',
                           style: AppTextStyle.semiBold(context),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -343,7 +343,7 @@ class _CheckInViewState extends State<CheckInView> {
           ),
         ],
         onChanged: (value) {
-          model.selectedSortir = value as MenuItemModel;
+          model.selectedSort = value as MenuItemModel;
           setState(() {});
         },
       );

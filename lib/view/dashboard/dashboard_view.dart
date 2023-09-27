@@ -54,67 +54,73 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   Widget compactBodyLayout() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSizes.padding),
-      child: Column(
-        children: [
-          guestTotalCard(),
-          const SizedBox(height: AppSizes.padding),
-          presentTotalCard(),
-          const SizedBox(height: AppSizes.padding),
-          absentTotalCard(),
-          const SizedBox(height: AppSizes.padding),
-          chart1(),
-          const SizedBox(height: AppSizes.padding),
-          chart2(),
-          const SizedBox(height: AppSizes.padding),
-          chart3(),
-          const SizedBox(height: AppSizes.padding),
-          sendedTotalCard(),
-          const SizedBox(height: AppSizes.padding),
-          failedSentTotalCard(),
-          const SizedBox(height: AppSizes.padding),
-          unRSVPTotalCard(),
-        ],
+    return Scrollbar(
+      thickness: AppSizes.padding / 1.5,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSizes.padding),
+        child: Column(
+          children: [
+            guestTotalCard(),
+            const SizedBox(height: AppSizes.padding),
+            presentTotalCard(),
+            const SizedBox(height: AppSizes.padding),
+            absentTotalCard(),
+            const SizedBox(height: AppSizes.padding),
+            chart1(),
+            const SizedBox(height: AppSizes.padding),
+            chart2(),
+            const SizedBox(height: AppSizes.padding),
+            chart3(),
+            const SizedBox(height: AppSizes.padding),
+            sendedTotalCard(),
+            const SizedBox(height: AppSizes.padding),
+            failedSentTotalCard(),
+            const SizedBox(height: AppSizes.padding),
+            unRSVPTotalCard(),
+          ],
+        ),
       ),
     );
   }
 
   Widget wideBodyLayout() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSizes.padding),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(child: guestTotalCard()),
-              const SizedBox(width: AppSizes.padding),
-              Expanded(child: presentTotalCard()),
-              const SizedBox(width: AppSizes.padding),
-              Expanded(child: absentTotalCard()),
-            ],
-          ),
-          const SizedBox(height: AppSizes.padding),
-          Row(
-            children: [
-              Expanded(child: chart1()),
-              const SizedBox(width: AppSizes.padding),
-              Expanded(child: chart2()),
-              const SizedBox(width: AppSizes.padding),
-              Expanded(child: chart3()),
-            ],
-          ),
-          const SizedBox(height: AppSizes.padding),
-          Row(
-            children: [
-              Expanded(child: sendedTotalCard()),
-              const SizedBox(width: AppSizes.padding),
-              Expanded(child: failedSentTotalCard()),
-              const SizedBox(width: AppSizes.padding),
-              Expanded(child: unRSVPTotalCard()),
-            ],
-          )
-        ],
+    return Scrollbar(
+      thickness: AppSizes.padding / 1.5,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSizes.padding),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(child: guestTotalCard()),
+                const SizedBox(width: AppSizes.padding),
+                Expanded(child: presentTotalCard()),
+                const SizedBox(width: AppSizes.padding),
+                Expanded(child: absentTotalCard()),
+              ],
+            ),
+            const SizedBox(height: AppSizes.padding),
+            Row(
+              children: [
+                Expanded(child: chart1()),
+                const SizedBox(width: AppSizes.padding),
+                Expanded(child: chart2()),
+                const SizedBox(width: AppSizes.padding),
+                Expanded(child: chart3()),
+              ],
+            ),
+            const SizedBox(height: AppSizes.padding),
+            Row(
+              children: [
+                Expanded(child: sendedTotalCard()),
+                const SizedBox(width: AppSizes.padding),
+                Expanded(child: failedSentTotalCard()),
+                const SizedBox(width: AppSizes.padding),
+                Expanded(child: unRSVPTotalCard()),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

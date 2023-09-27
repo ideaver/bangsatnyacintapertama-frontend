@@ -3,7 +3,10 @@ import 'package:bangsatnyacintapertama_graphql_client/gql_guest_service.dart';
 import 'package:bangsatnyacintapertama_graphql_client/operations/generated/guest_find_many_by_invitation_name.graphql.dart';
 import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:bangsatnyacintapertama_graphql_client/utils/gql_error_parser.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:http_parser/http_parser.dart';
 
 import '../app/const/app_const.dart';
 import '../app/utility/console_log.dart';
@@ -172,34 +175,34 @@ class GuestInvitationViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> uploadGuestInvitationFile(String path, NavigatorState navigator) async {
-    // final imageFile = File(path);
+  Future<void> uploadGuestInvitationFile(Uint8List bytes, NavigatorState navigator) async {
+    List<int> list = bytes.cast();
 
-    // var multipartFile = await MultipartFile.fromBytes(
-    //   'file',
-    //   await ConvertFileToCast(_fileBytes),
-    //   filename: '${DateTime.now().second}.xlsx',
-    //   contentType: MediaType("file", "xlsx"),
-    // );
+    var multipartFile = MultipartFile.fromBytes(
+      'file',
+      list,
+      filename: '${DateTime.now().second}.xlsx',
+      contentType: MediaType('*', '*'),
+    );
 
-    // var res = await GqlGuestService.uploadSingleFile(
-    //   multipartFile: multipartFile,
-    // );
+    var res = await GqlGuestService.uploadSingleFile(
+      multipartFile: multipartFile,
+    );
 
-    // if (res.parsedData?.uploadSingleFile != null && !res.hasException) {
-    //   navigator.pop();
+    if (res.parsedData?.uploadSingleFile != null && !res.hasException) {
+      navigator.pop();
 
-    //   AppSnackbar.show(navigator, title: "Berhasil diupload");
-    // } else {
-    //   navigator.pop();
+      AppSnackbar.show(navigator, title: "Berhasil diupload");
+    } else {
+      navigator.pop();
 
-    //   AppSnackbar.show(
-    //     navigator,
-    //     title: "Gagal diupload ${res.exception?.graphqlErrors.firstOrNull?.extensions?['code']}",
-    //   );
+      AppSnackbar.show(
+        navigator,
+        title: "Gagal diupload ${res.exception?.graphqlErrors.firstOrNull?.extensions?['code']}",
+      );
 
-    //   cl('[uploadGuestInvitationFile].error = ${gqlErrorParser(res)}');
-    // }
+      cl('[uploadGuestInvitationFile].error = ${gqlErrorParser(res)}');
+    }
   }
 
   void onSelectAll(bool? val) {

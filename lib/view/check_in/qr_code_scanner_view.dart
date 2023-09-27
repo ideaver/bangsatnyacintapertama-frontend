@@ -20,7 +20,7 @@ class QRCodeScannerView extends StatefulWidget {
 
 class _QRCodeScannerViewState extends State<QRCodeScannerView> {
   List<String> fakenames = [
-    "Jhon DOe",
+    "Jhon Doe",
     "Toyama Nao",
     "Amamiya Sora",
   ];

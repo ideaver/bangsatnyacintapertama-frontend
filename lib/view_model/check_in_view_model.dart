@@ -1,6 +1,5 @@
 import 'package:bangsatnyacintapertama_graphql_client/gql_guest_service.dart';
 import 'package:bangsatnyacintapertama_graphql_client/operations/generated/guest_find_many_by_invitation_name.graphql.dart';
-import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:bangsatnyacintapertama_graphql_client/utils/gql_error_parser.dart';
 import 'package:flutter/material.dart';
 
@@ -13,21 +12,22 @@ class CheckInViewModel extends ChangeNotifier {
   int totalUncheckIn = 0;
   int totalEmptySeat = 0;
 
+  TextEditingController searchController = TextEditingController();
+
   List<Query$GuestFindManyByInvitationName$guestFindMany>? guests;
   List<Query$GuestFindManyByInvitationName$guestFindMany> selectedGuests = [];
 
   MenuItemModel? selectedAction = checkInActionDropdownItems.first;
-  MenuItemModel? selectedSortir = checkInSortirDropdownItems.first;
-
-  Enum$UserRole userRole = Enum$UserRole.GUEST;
-  Enum$ConfirmationStatus confirmationStatus = Enum$ConfirmationStatus.CONFIRMED;
-  List<Enum$QueueStatus>? emailQueueStatus;
-  List<Enum$QueueStatus>? whatsAppQueueStatus;
+  MenuItemModel? selectedSort = guestSortirDropdownItems.first;
 
   void resetState() {
     totalCheckIn = 0;
     totalUncheckIn = 0;
     totalEmptySeat = 0;
+    guests = null;
+    selectedGuests = [];
+    selectedAction = checkInActionDropdownItems.first;
+    selectedSort = guestSortirDropdownItems.last;
   }
 
   Future<void> initCheckInView() async {
