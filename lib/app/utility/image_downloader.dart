@@ -34,7 +34,7 @@ class ImageDownloader {
             //   //   // "Access-Control-Allow-Headers":
             //   //   //     "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
             //   //   // "Access-Control-Allow-Methods": "GET, OPTIONS"
-            // "Access-Control-Allow-Origin": "true",
+            // "Access-Control-Allow-Origin": "true", 
             'Content-Type': 'application/json',
             'Accept': '*/*'
           },

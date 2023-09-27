@@ -14,7 +14,6 @@ import '../../app/service/locator/service_locator.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_sizes.dart';
 import '../../app/theme/app_text_style.dart';
-import '../../app/utility/image_downloader.dart';
 import '../../model/menu_item_model.dart';
 import '../../model/table_model.dart';
 import '../../view_model/guest_invitation_view_model.dart';
@@ -359,8 +358,8 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
       Breakpoints(
         xs: Row(
           children: [
-            downloadButton(),
-            const SizedBox(width: AppSizes.padding / 1.5),
+            // downloadButton(),
+            // const SizedBox(width: AppSizes.padding / 1.5),
             addButton(),
             const SizedBox(width: AppSizes.padding / 1.5),
             deleteButton(),
@@ -376,8 +375,8 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             const SizedBox(width: AppSizes.padding / 1.5),
             Expanded(child: sortDropDown()),
             const SizedBox(width: AppSizes.padding / 1.5),
-            downloadButton(),
-            const SizedBox(width: AppSizes.padding / 1.5),
+            // downloadButton(),
+            // const SizedBox(width: AppSizes.padding / 1.5),
             addButton(),
             const SizedBox(width: AppSizes.padding / 1.5),
             deleteButton(),
@@ -610,34 +609,34 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
     });
   }
 
-  Widget downloadButton() {
-    return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
-      return Opacity(
-        opacity: model.selectedGuests.isEmpty ? 0.5 : 1.0,
-        child: AppIconButton(
-          icon: Icons.file_download_outlined,
-          iconSize: 22,
-          backgroundColor: AppColors.baseLv7,
-          borderRadius: AppSizes.radius,
-          onPressed: () async {
-            if (model.selectedGuests.isEmpty) {
-              return;
-            }
+  // Widget downloadButton() {
+  //   return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
+  //     return Opacity(
+  //       opacity: model.selectedGuests.isEmpty ? 0.5 : 1.0,
+  //       child: AppIconButton(
+  //         icon: Icons.file_download_outlined,
+  //         iconSize: 22,
+  //         backgroundColor: AppColors.baseLv7,
+  //         borderRadius: AppSizes.radius,
+  //         onPressed: () async {
+  //           if (model.selectedGuests.isEmpty) {
+  //             return;
+  //           }
 
-            for (var data in model.selectedGuests) {
-              await ImageDownloader.download(
-                context,
-                data.invitationImage?.path,
-                data.invitationName,
-              );
-            }
+  //           for (var data in model.selectedGuests) {
+  //             await ImageDownloader.download(
+  //               context,
+  //               data.invitationImage?.path,
+  //               data.invitationName,
+  //             );
+  //           }
 
-            model.refreshData();
-          },
-        ),
-      );
-    });
-  }
+  //           model.refreshData();
+  //         },
+  //       ),
+  //     );
+  //   });
+  // }
 
   Widget addButton() {
     return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
@@ -791,12 +790,13 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
                         buttonColor: AppColors.baseLv7,
                         padding: const EdgeInsets.all(AppSizes.padding / 3),
                         onTap: () async {
-                          ImageDownloader.download(
-                            context,
-                            // "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png",
-                            model.guests![i].invitationImage?.path,
-                            model.guests![i].invitationName,
-                          );
+                          // ImageDownloader.download(
+                          //   context,
+                          //   // "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png",
+                          //   model.guests![i].invitationImage?.path,
+                          //   model.guests![i].invitationName,
+                          // );
+                          ExternalLauncher.openUrl(model.guests![i].invitationImage?.path ?? '');
                           cl(model.guests![i].invitationImage?.path);
                         },
                       ),
