@@ -1,3 +1,4 @@
+import 'package:bangsatnyacintapertama/app/utility/date_formatter.dart';
 import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -92,8 +93,12 @@ class _CheckInViewState extends State<CheckInView> {
           data: 'Show Time',
           textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
         ),
+        TableModel(
+          data: 'Scanned At',
+          textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
+        ),
         // TableModel(
-        //   data: 'RSVP',
+        //   data: 'Scanned By',
         //   textStyle: AppTextStyle.bold(context, color: AppColors.baseLv4),
         // ),
       ];
@@ -189,7 +194,7 @@ class _CheckInViewState extends State<CheckInView> {
         backgroundColorIcon: AppColors.white,
         backgroundColor: AppColors.primary,
         title: 'TOTAL CHECK-IN',
-        contentText: '0',
+        contentText: '${model.totalCheckIn}',
         contentSubtext: 'ORANG',
         titleColor: AppColors.white.withOpacity(0.54),
         subtitleColor: AppColors.white,
@@ -207,10 +212,10 @@ class _CheckInViewState extends State<CheckInView> {
 
   Widget unCheckInTotalCard() {
     return Consumer<CheckInViewModel>(builder: (context, model, _) {
-      return const CardProgram(
+      return CardProgram(
         iconProgram: Icons.person_outline,
         title: 'BELUM CHECK-IN',
-        contentText: '0',
+        contentText: '${model.totalUncheckIn}',
         contentSubtext: 'ORANG',
         bottomTitleColor: AppColors.baseLv4,
         toolTipTitle: 'Lorem',
@@ -221,10 +226,10 @@ class _CheckInViewState extends State<CheckInView> {
 
   Widget emptySeatTotalCard() {
     return Consumer<CheckInViewModel>(builder: (context, model, _) {
-      return const CardProgram(
+      return CardProgram(
         iconProgram: Icons.person_outline,
         title: 'KURSI KOSONG',
-        contentText: '0',
+        contentText: '${model.totalEmptySeat}',
         contentSubtext: 'KURSI',
         bottomTitleColor: AppColors.baseLv4,
         toolTipTitle: 'Lorem',
@@ -286,8 +291,8 @@ class _CheckInViewState extends State<CheckInView> {
                   Row(
                     children: [
                       Expanded(child: sortDropDown()),
-                      const SizedBox(width: AppSizes.padding / 1.5),
-                      Expanded(child: actionDropDown()),
+                      // const SizedBox(width: AppSizes.padding / 1.5),
+                      // Expanded(child: actionDropDown()),
                     ],
                   ),
                 ],
@@ -315,8 +320,8 @@ class _CheckInViewState extends State<CheckInView> {
             Expanded(child: searchField()),
             const SizedBox(width: AppSizes.padding / 1.5),
             Expanded(child: sortDropDown()),
-            const SizedBox(width: AppSizes.padding / 1.5),
-            Expanded(child: actionDropDown()),
+            // const SizedBox(width: AppSizes.padding / 1.5),
+            // Expanded(child: actionDropDown()),
             const SizedBox(width: AppSizes.padding / 1.5),
             deleteButton(),
             const SizedBox(width: AppSizes.padding / 1.5),
@@ -366,7 +371,7 @@ class _CheckInViewState extends State<CheckInView> {
           ),
         ),
         items: [
-          ...guestSortirDropdownItems.map(
+          ...guestScannedSortirDropdownItems.map(
             (item) => DropdownMenuItem<MenuItemModel>(
               value: item,
               child: Row(
@@ -376,6 +381,8 @@ class _CheckInViewState extends State<CheckInView> {
                     padding: const EdgeInsets.only(left: AppSizes.padding / 2),
                     child: Text(
                       item.text ?? '',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                       style: AppTextStyle.semiBold(context),
                     ),
                   ),
@@ -403,6 +410,14 @@ class _CheckInViewState extends State<CheckInView> {
             }
           }
 
+          if (model.selectedSort!.text!.contains('Scanned')) {
+            if (model.selectedSort!.text!.contains('Ascending')) {
+              model.scannedAtSortOrder = Enum$SortOrder.asc;
+            } else {
+              model.scannedAtSortOrder = Enum$SortOrder.desc;
+            }
+          }
+
           model.getAllGuests();
 
           setState(() {});
@@ -411,59 +426,59 @@ class _CheckInViewState extends State<CheckInView> {
     });
   }
 
-  Widget actionDropDown() {
-    return Consumer<CheckInViewModel>(builder: (context, model, _) {
-      return AppDropDown(
-        customButton: AppCardContainer(
-          margin: EdgeInsets.zero,
-          borderRadius: BorderRadius.circular(100),
-          backgroundColor: AppColors.primary,
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSizes.padding / 1.5,
-            horizontal: AppSizes.padding,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  model.selectedAction?.text ?? '',
-                  style: AppTextStyle.semiBold(context, color: AppColors.white),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const Icon(Icons.arrow_drop_down, color: AppColors.white)
-            ],
-          ),
-        ),
-        items: [
-          ...checkInActionDropdownItems.map(
-            (item) => DropdownMenuItem<MenuItemModel>(
-              value: item,
-              child: Row(
-                children: [
-                  item.icon ?? const SizedBox.shrink(),
-                  Padding(
-                    padding: const EdgeInsets.only(left: AppSizes.padding / 2),
-                    child: Text(
-                      item.text ?? '',
-                      style: AppTextStyle.semiBold(context),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          model.selectedAction = value as MenuItemModel;
+  // Widget actionDropDown() {
+  //   return Consumer<CheckInViewModel>(builder: (context, model, _) {
+  //     return AppDropDown(
+  //       customButton: AppCardContainer(
+  //         margin: EdgeInsets.zero,
+  //         borderRadius: BorderRadius.circular(100),
+  //         backgroundColor: AppColors.primary,
+  //         padding: const EdgeInsets.symmetric(
+  //           vertical: AppSizes.padding / 1.5,
+  //           horizontal: AppSizes.padding,
+  //         ),
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Expanded(
+  //               child: Text(
+  //                 model.selectedAction?.text ?? '',
+  //                 style: AppTextStyle.semiBold(context, color: AppColors.white),
+  //                 overflow: TextOverflow.ellipsis,
+  //               ),
+  //             ),
+  //             const Icon(Icons.arrow_drop_down, color: AppColors.white)
+  //           ],
+  //         ),
+  //       ),
+  //       items: [
+  //         ...checkInActionDropdownItems.map(
+  //           (item) => DropdownMenuItem<MenuItemModel>(
+  //             value: item,
+  //             child: Row(
+  //               children: [
+  //                 item.icon ?? const SizedBox.shrink(),
+  //                 Padding(
+  //                   padding: const EdgeInsets.only(left: AppSizes.padding / 2),
+  //                   child: Text(
+  //                     item.text ?? '',
+  //                     style: AppTextStyle.semiBold(context),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //       onChanged: (value) {
+  //         model.selectedAction = value as MenuItemModel;
 
-          // TODO
-          setState(() {});
-        },
-      );
-    });
-  }
+  //         // TODO
+  //         setState(() {});
+  //       },
+  //     );
+  //   });
+  // }
 
   Widget searchField() {
     return Consumer<CheckInViewModel>(builder: (context, model, _) {
@@ -602,6 +617,14 @@ class _CheckInViewState extends State<CheckInView> {
             TableModel(
               data: model.guests![i].showTime ?? '-',
             ),
+            TableModel(
+              data: model.guests![i].qrcode?.scannedAt != null
+                  ? DateFormatter.slashDateWithClock(model.guests![i].qrcode!.scannedAt!)
+                  : '-',
+            ),
+            // TableModel(
+            //   data: model.guests![i].qrcode?.scannedBy?.fullName ?? '-',
+            // ),
             // TableModel(
             //   child: rsvpTableWidgetValue(
             //     confirmationStatusDropdownItems

@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:responsive_toolkit/breakpoints.dart';
 import 'package:responsive_toolkit/responsive_layout.dart';
 
-import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_sizes.dart';
 import '../../app/theme/app_text_style.dart';
 import '../../model/menu_item_model.dart';
-import '../atom/app_text_field.dart';
 import 'user_dropdown.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -88,6 +86,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       padding: const EdgeInsets.all(AppSizes.padding),
       child: Column(
         children: [
+          // child: Expanded(
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,8 +96,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
               ],
             ),
           ),
-          const SizedBox(height: AppSizes.padding),
-          searchField(),
+          // ),
+          // const SizedBox(height: AppSizes.padding),
+          // searchField(),
         ],
       ),
     );
@@ -174,17 +174,18 @@ class _CustomAppBarState extends State<CustomAppBar> {
           Expanded(
             child: title(),
           ),
-          Expanded(
-            child: Row(
-              children: [
-                ...widget.additionalWidgets,
-                const SizedBox(width: AppSizes.padding / 2),
-                searchField(),
-                const SizedBox(width: AppSizes.padding / 2),
-                userDropDownButton(),
-              ],
-            ),
-          )
+          userDropDownButton(),
+          // Expanded(
+          //   child: Row(
+          //     children: [
+          //       ...widget.additionalWidgets,
+          //       // const SizedBox(width: AppSizes.padding / 2),
+          //       // searchField(),
+          //       const SizedBox(width: AppSizes.padding / 2),
+          //       userDropDownButton(),
+          //     ],
+          //   ),
+          // )
         ],
       ),
     );
@@ -199,28 +200,28 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 
-  Widget searchField() {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: AppTextField(
-          type: AppTextFieldType.search,
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSizes.padding / 4,
-            horizontal: AppSizes.padding / 2,
-          ),
-          showSuffixButton: false,
-          prefixIcon: const Icon(Icons.search),
-          fillColor: AppColors.white,
-          hintText: widget.searchHintText,
-          onTap: widget.onTapSearch,
-          onChanged: widget.onChangedSearch,
-          onEditingComplete: widget.onEditingComplete,
-        ),
-      ),
-    );
-  }
+  // Widget searchField() {
+  //   return Expanded(
+  //     child: Container(
+  //       decoration: BoxDecoration(
+  //         color: AppColors.white,
+  //         borderRadius: BorderRadius.circular(100),
+  //       ),
+  //       child: AppTextField(
+  //         type: AppTextFieldType.search,
+  //         padding: const EdgeInsets.symmetric(
+  //           vertical: AppSizes.padding / 4,
+  //           horizontal: AppSizes.padding / 2,
+  //         ),
+  //         showSuffixButton: false,
+  //         prefixIcon: const Icon(Icons.search),
+  //         fillColor: AppColors.white,
+  //         hintText: widget.searchHintText,
+  //         onTap: widget.onTapSearch,
+  //         onChanged: widget.onChangedSearch,
+  //         onEditingComplete: widget.onEditingComplete,
+  //       ),
+  //     ),
+  //   );
+  // }
 }

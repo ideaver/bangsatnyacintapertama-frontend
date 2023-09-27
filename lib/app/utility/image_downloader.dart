@@ -29,12 +29,12 @@ class ImageDownloader {
             //   "Accept":
             //       "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
             //   //   // "content-type": "application/json",
-            //   "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-            //   //   // "Access-Control-Allow-Credentials": "true", // Required for cookies, authorization headers with HTTPS
+            "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+            "Access-Control-Allow-Credentials": "true", // Required for cookies, authorization headers with HTTPS
             //   //   // "Access-Control-Allow-Headers":
             //   //   //     "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
             //   //   // "Access-Control-Allow-Methods": "GET, OPTIONS"
-            "Access-Control-Allow-Origin": "true",
+            // "Access-Control-Allow-Origin": "true",
             'Content-Type': 'application/json',
             'Accept': '*/*'
           },

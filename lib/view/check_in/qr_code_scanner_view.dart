@@ -1,3 +1,4 @@
+import 'package:bangsatnyacintapertama/app/service/locator/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,12 @@ class QRCodeScannerView extends StatefulWidget {
 
 class _QRCodeScannerViewState extends State<QRCodeScannerView> {
   @override
+  void initState() {
+    locator<CheckInViewModel>().scannedGuest = null;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.baseLv2,
@@ -32,6 +39,11 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
   }
 
   Widget body() {
+    // return Consumer<NetworkCheckerService>(builder: (context, model, _) {
+    //   if (!model.isConnected) {
+    //     return Center(child: noInternet());
+    //   }
+
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSizes.padding),
@@ -45,6 +57,7 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
         ),
       ),
     );
+    // });
   }
 
   Widget header() {

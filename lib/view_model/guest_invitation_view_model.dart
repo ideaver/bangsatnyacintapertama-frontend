@@ -145,12 +145,14 @@ class GuestInvitationViewModel extends ChangeNotifier {
 
     if (res.hasException) {
       navigator.pop();
-      selectedGuests.clear();
       AppSnackbar.show(navigator, title: "Gagal dihapus");
     } else {
+      selectedGuests.clear();
       navigator.pop();
       AppSnackbar.show(navigator, title: "Berhasil dihapus");
     }
+
+    notifyListeners();
   }
 
   Future<void> uploadGuestInvitationFile(Uint8List bytes, NavigatorState navigator) async {
@@ -174,10 +176,7 @@ class GuestInvitationViewModel extends ChangeNotifier {
     } else {
       navigator.pop();
 
-      AppSnackbar.show(
-        navigator,
-        title: "Gagal diupload ${res.exception?.graphqlErrors.firstOrNull?.extensions?['code']}",
-      );
+      AppDialog.showErrorDialog(navigator, message: gqlErrorParser(res));
 
       cl('[uploadGuestInvitationFile].error = ${gqlErrorParser(res)}');
     }

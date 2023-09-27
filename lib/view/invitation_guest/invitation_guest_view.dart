@@ -1,4 +1,5 @@
 import 'package:bangsatnyacintapertama/app/utility/console_log.dart';
+import 'package:bangsatnyacintapertama/app/utility/external_launcher.dart';
 import 'package:bangsatnyacintapertama/view/invitation_guest/add_edit_guest_dialog.dart';
 import 'package:bangsatnyacintapertama/widget/atom/app_button.dart';
 import 'package:bangsatnyacintapertama/widget/atom/app_progress_indicator.dart';
@@ -237,7 +238,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
                 color: AppColors.primary,
               ),
               onTap: () {
-                // TODO
+                ExternalLauncher.openUrl("https://rebrand.ly/uploadtemplate");
               },
             ),
           ],
@@ -248,7 +249,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
 
           FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-          cl('path = $result?.files.single.path');
+          // cl('path = $result?.files.single.path');
 
           if (result?.files.single.bytes != null) {
             await model.uploadGuestInvitationFile(result!.files.single.bytes!, navigator);
@@ -598,7 +599,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
   Widget refreshButton() {
     return Consumer<GuestInvitationViewModel>(builder: (context, model, _) {
       return AppIconButton(
-        icon: Icons.replay_outlined,
+        icon: Icons.refresh_rounded,
         iconSize: 22,
         backgroundColor: AppColors.baseLv7,
         borderRadius: AppSizes.radius,
@@ -652,8 +653,6 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
             title: 'Tambah Data',
             child: const AddEditGuestDialog(),
           );
-
-          model.refreshData();
         },
       );
     });

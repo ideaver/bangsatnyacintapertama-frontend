@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import '../app/const/app_const.dart';
 import '../app/utility/console_log.dart';
 import '../model/menu_item_model.dart';
+import '../widget/atom/app_dialog.dart';
 import '../widget/atom/app_snackbar.dart';
 
 class CheckInViewModel extends ChangeNotifier {
@@ -27,8 +28,9 @@ class CheckInViewModel extends ChangeNotifier {
   MenuItemModel? selectedSort = guestSortirDropdownItems.first;
 
   Enum$SortOrder invitationNameSortOrder = Enum$SortOrder.asc;
-  Enum$SortOrder sourceSortOrder = Enum$SortOrder.asc;
+  // Enum$SortOrder sourceSortOrder = Enum$SortOrder.asc;
   Enum$SortOrder seatSortOrder = Enum$SortOrder.asc;
+  Enum$SortOrder scannedAtSortOrder = Enum$SortOrder.asc;
 
   Query$QrCodeScan$qrCodeScan? scannedGuest;
 
@@ -45,17 +47,18 @@ class CheckInViewModel extends ChangeNotifier {
     selectedSort = guestSortirDropdownItems.last;
 
     invitationNameSortOrder = Enum$SortOrder.asc;
-    sourceSortOrder = Enum$SortOrder.asc;
+    // sourceSortOrder = Enum$SortOrder.asc;
     seatSortOrder = Enum$SortOrder.asc;
+    scannedAtSortOrder = Enum$SortOrder.asc;
 
     timer?.cancel();
     timer = null;
   }
 
   Future<void> initCheckInView() async {
-    // countTotalCheckIn();
-    // counttotalUnCheckIn();
-    // counttotalEmptySeat();
+    countTotalCheckIn();
+    counttotalUnCheckIn();
+    counttotalEmptySeat();
     getAllGuests();
   }
 
@@ -69,36 +72,36 @@ class CheckInViewModel extends ChangeNotifier {
   }
 
   Future<void> countTotalCheckIn() async {
-    // var res = await GqlUserService.countUserWhereRoleIsGuest();
+    var res = await GqlGuestService.guestCountWhereScannetAtNotNull();
 
-    // if (res.parsedData?.userCount != null && !res.hasException) {
-    //   totalCheckIn = (res.parsedData?.userCount ?? 0).toInt();
-    //   notifyListeners();
-    // } else {
-    //   cl('[countTotalCheckIn].error = ${gqlErrorParser(res)}');
-    // }
+    if (res.parsedData?.guestCount != null && !res.hasException) {
+      totalCheckIn = (res.parsedData?.guestCount ?? 0).toInt();
+      notifyListeners();
+    } else {
+      cl('[countTotalCheckIn].error = ${gqlErrorParser(res)}');
+    }
   }
 
   Future<void> counttotalUnCheckIn() async {
-    // var res = await GqlUserService.countUserWhereRoleIsGuestAndEmailOrWhatsappStatusEqualSent();
+    var res = await GqlGuestService.guestCountWhereConfirmationStatusAndQrCodeScannedAtNull();
 
-    // if (res.parsedData?.userCount != null && !res.hasException) {
-    //   totalUncheckIn = (res.parsedData?.userCount ?? 0).toInt();
-    //   notifyListeners();
-    // } else {
-    //   cl('[counttotalUnCheckIn].error = ${gqlErrorParser(res)}');
-    // }
+    if (res.parsedData?.guestCount != null && !res.hasException) {
+      totalUncheckIn = (res.parsedData?.guestCount ?? 0).toInt();
+      notifyListeners();
+    } else {
+      cl('[counttotalUnCheckIn].error = ${gqlErrorParser(res)}');
+    }
   }
 
   Future<void> counttotalEmptySeat() async {
-    // var res = await GqlUserService.countUserWhereRoleIsGuestAndConfirmationStatusIsUnconfirmed();
+    var res = await GqlGuestService.guestCountWhereInvitedButNotCheckinYet();
 
-    // if (res.parsedData?.userCount != null && !res.hasException) {
-    //   totalEmptySeat = (res.parsedData?.userCount ?? 0).toInt();
-    //   notifyListeners();
-    // } else {
-    //   cl('[counttotalEmptySeat].error = ${gqlErrorParser(res)}');
-    // }
+    if (res.parsedData?.guestCount != null && !res.hasException) {
+      totalEmptySeat = (res.parsedData?.guestCount ?? 0).toInt();
+      notifyListeners();
+    } else {
+      cl('[counttotalEmptySeat].error = ${gqlErrorParser(res)}');
+    }
   }
 
   Future<void> getAllGuests({
@@ -115,6 +118,7 @@ class CheckInViewModel extends ChangeNotifier {
       invitationNameSortOrder: invitationNameSortOrder,
       // sourceSortOrder: sourceSortOrder,
       seatSortOrder: seatSortOrder,
+      scannedAtSortOrder: scannedAtSortOrder,
     );
 
     if (res.parsedData?.guestFindMany != null && !res.hasException) {
@@ -131,18 +135,21 @@ class CheckInViewModel extends ChangeNotifier {
   }
 
   Future<void> deleteGuestData(NavigatorState navigator) async {
-    // AppDialog.showDialogProgress(navigator);
+    AppDialog.showDialogProgress(navigator);
 
-    // var res = await GqlGuestService.guestDeleteMany(guests: selectedGuests);
+    var res = await GqlGuestService.qrCodeDeleteMany(guests: selectedGuests);
 
-    // if (res.hasException) {
-    //   navigator.pop();
-    //   selectedGuests.clear();
-    //   AppSnackbar.show(navigator, title: "Gagal dihapus");
-    // } else {
-    //   navigator.pop();
-    //   AppSnackbar.show(navigator, title: "Berhasil dihapus");
-    // }
+    if (res.hasException) {
+      navigator.pop();
+
+      AppSnackbar.show(navigator, title: "Gagal dihapus");
+    } else {
+      selectedGuests.clear();
+      navigator.pop();
+      AppSnackbar.show(navigator, title: "Berhasil dihapus");
+    }
+
+    notifyListeners();
   }
 
   Future<void> qrCodeScan({
@@ -152,6 +159,12 @@ class CheckInViewModel extends ChangeNotifier {
     if (timer != null) {
       return;
     }
+
+    timer = Timer(const Duration(seconds: 3), () {
+      print("Yeah, this line is printed after 2 seconds");
+      timer?.cancel();
+      timer = null;
+    });
 
     var res = await GqlGuestService.qrCodeScan(
       userId: AuthService.user!.id,
@@ -168,12 +181,6 @@ class CheckInViewModel extends ChangeNotifier {
       AppSnackbar.show(navigator, title: "Gagal check-in, silahkan coba lagi");
       cl('[qrCodeScan].error = ${gqlErrorParser(res)}');
     }
-
-    timer = Timer(const Duration(seconds: 2), () {
-      print("Yeah, this line is printed after 2 seconds");
-      timer?.cancel();
-      timer = null;
-    });
 
     notifyListeners();
   }

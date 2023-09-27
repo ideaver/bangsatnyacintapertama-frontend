@@ -49,6 +49,7 @@ PreferredSizeWidget appBarWidget({
     userRole: AuthService.user?.role.name ?? '',
     // userImage: randomImage,
     accountDropdownItems: _accountDropdownItems(navigator),
-    height: ResponsiveLayout.value(navigator.context, Breakpoints(xs: 94 * 1.8, md: 94)),
+    height: ResponsiveLayout.value(navigator.context, Breakpoints(xs: 94, md: 94)),
+    // height: ResponsiveLayout.value(navigator.context, Breakpoints(xs: 94 * 1.8, md: 94)),
   );
 }
