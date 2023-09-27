@@ -5,6 +5,7 @@ import 'package:bangsatnyacintapertama/widget/atom/app_progress_indicator.dart';
 import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
 
@@ -13,7 +14,7 @@ import '../../app/service/locator/service_locator.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_sizes.dart';
 import '../../app/theme/app_text_style.dart';
-import '../../app/utility/external_launcher.dart';
+import '../../app/utility/image_downloader.dart';
 import '../../model/menu_item_model.dart';
 import '../../model/table_model.dart';
 import '../../view_model/guest_invitation_view_model.dart';
@@ -750,15 +751,15 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
                   ? const SizedBox.shrink()
                   : InkWell(
                       onTap: () async {
-                        // await ImageDownloader.download(
-                        //   context,
-                        //   // "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png",
-                        //   model.guests![i].invitationImage?.path,
-                        //   model.guests![i].invitationName,
-                        // );
+                        ImageDownloader.download(
+                          context,
+                          // "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png",
+                          model.guests![i].invitationImage?.path,
+                          model.guests![i].invitationName,
+                        );
                         cl(model.guests![i].invitationImage?.path);
-                        ExternalLauncher.openUrl(model.guests![i].invitationImage?.path ?? '');
-                        // await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
+                        // ExternalLauncher.openUrl(model.guests![i].invitationImage?.path ?? '');
+                        await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
                         // await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
                       },
                       child: Container(

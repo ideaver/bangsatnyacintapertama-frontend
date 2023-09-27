@@ -147,8 +147,9 @@ class CheckInViewModel extends ChangeNotifier {
       guestId: guestId,
     );
 
-    cl('GUEST ID' + AuthService.user!.id);
-    cl('GUEST ID' + guestId);
+    cl('USER ID ' + AuthService.user!.id);
+    cl('GUEST ID ' + guestId);
+    cl(res);
 
     if (res.parsedData?.qrCodeScan != null) {
       scannedGuest = res.parsedData?.qrCodeScan;
