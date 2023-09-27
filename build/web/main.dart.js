@@ -8232,14 +8232,13 @@ s=1
 break
 case 1:return A.u(q,r)}})
 return A.v($async$agH,r)},
-agK(a,b,c,d,e){var s=0,r=A.w(t.CC),q,p,o,n,m
+agK(a,b,c,d,e){var s=0,r=A.w(t.CC),q,p,o,n
 var $async$agK=A.q(function(f,g){if(f===1)return A.t(g,r)
 while(true)switch(s){case 0:p=t.N
-o=t.P
-n=t.GU
-m=t.Fu
+o=t.GU
+n=t.Fu
 s=3
-return A.z($.eJ.bi().eH(0,A.j_(null,null,B.X3,null,null,null,null,new A.agL(),null,A.O(["where",A.O(["invitationName",A.O(["contains",a],p,p),"deletedAt",A.O(["equals",null],p,o),"qrcode",A.O(["is",A.O(["scannedAt",A.O(["not",null],p,o)],p,t.kU)],p,t.ch)],p,t.xE),"orderBy",A.a([A.O(["qrcode",A.O(["scannedAt",A.O(["sort",c.b],p,p)],p,n)],p,t.hB),A.O(["invitationName",b.b],p,p),A.O(["seat",A.O(["sort",d.b],p,p)],p,n)],t.Mq),"take",25,"skip",e],p,t.z),m),m),$async$agK)
+return A.z($.eJ.bi().eH(0,A.j_(null,null,B.X3,null,null,null,null,new A.agL(),null,A.O(["where",A.O(["invitationName",A.O(["contains",a],p,p),"qrcode",A.O(["is",A.O(["scannedAt",A.O(["not",null],p,t.P)],p,t.kU)],p,t.ch)],p,t.nf),"orderBy",A.a([A.O(["qrcode",A.O(["scannedAt",A.O(["sort",c.b],p,p)],p,o)],p,t.hB),A.O(["invitationName",b.b],p,p),A.O(["seat",A.O(["sort",d.b],p,p)],p,o)],t.Mq),"take",25,"skip",e],p,t.z),n),n),$async$agK)
 case 3:q=g
 s=1
 break
