@@ -1,11 +1,15 @@
+import 'package:bangsatnyacintapertama/app/service/auth/auth_service.dart';
 import 'package:bangsatnyacintapertama_graphql_client/gql_guest_service.dart';
-import 'package:bangsatnyacintapertama_graphql_client/operations/generated/guest_find_many_by_invitation_name.graphql.dart';
+import 'package:bangsatnyacintapertama_graphql_client/operations/generated/guest_find_many_order_by_qr_code_scan.graphql.dart';
+import 'package:bangsatnyacintapertama_graphql_client/operations/generated/qr_code_scan.graphql.dart';
+import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:bangsatnyacintapertama_graphql_client/utils/gql_error_parser.dart';
 import 'package:flutter/material.dart';
 
 import '../app/const/app_const.dart';
 import '../app/utility/console_log.dart';
 import '../model/menu_item_model.dart';
+import '../widget/atom/app_snackbar.dart';
 
 class CheckInViewModel extends ChangeNotifier {
   int totalCheckIn = 0;
@@ -14,11 +18,17 @@ class CheckInViewModel extends ChangeNotifier {
 
   TextEditingController searchController = TextEditingController();
 
-  List<Query$GuestFindManyByInvitationName$guestFindMany>? guests;
-  List<Query$GuestFindManyByInvitationName$guestFindMany> selectedGuests = [];
+  List<Query$GuestFindManyOrderByQrCodeScan$guestFindMany>? guests;
+  List<Query$GuestFindManyOrderByQrCodeScan$guestFindMany> selectedGuests = [];
 
   MenuItemModel? selectedAction = checkInActionDropdownItems.first;
   MenuItemModel? selectedSort = guestSortirDropdownItems.first;
+
+  Enum$SortOrder invitationNameSortOrder = Enum$SortOrder.asc;
+  Enum$SortOrder sourceSortOrder = Enum$SortOrder.asc;
+  Enum$SortOrder seatSortOrder = Enum$SortOrder.asc;
+
+  Query$QrCodeScan$qrCodeScan? scannedGuest;
 
   void resetState() {
     totalCheckIn = 0;
@@ -26,8 +36,13 @@ class CheckInViewModel extends ChangeNotifier {
     totalEmptySeat = 0;
     guests = null;
     selectedGuests = [];
+
     selectedAction = checkInActionDropdownItems.first;
     selectedSort = guestSortirDropdownItems.last;
+
+    invitationNameSortOrder = Enum$SortOrder.asc;
+    sourceSortOrder = Enum$SortOrder.asc;
+    seatSortOrder = Enum$SortOrder.asc;
   }
 
   Future<void> initCheckInView() async {
@@ -35,6 +50,15 @@ class CheckInViewModel extends ChangeNotifier {
     // counttotalUnCheckIn();
     // counttotalEmptySeat();
     getAllGuests();
+  }
+
+  void refreshData({bool reset = false}) async {
+    if (reset) {
+      guests = null;
+      notifyListeners();
+    }
+
+    getAllGuests(contains: searchController.text);
   }
 
   Future<void> countTotalCheckIn() async {
@@ -74,13 +98,16 @@ class CheckInViewModel extends ChangeNotifier {
     int skip = 0,
     String contains = "",
   }) async {
-    var res = await GqlGuestService.guestFindManyByInvitationName(
+    var res = await GqlGuestService.guestFindManyOrderByQrCodeScan(
       skip: skip,
       contains: contains,
       // userRole: userRole,
       // confirmationStatus: confirmationStatus,
       // emailQueueStatus: emailQueueStatus,
       // whatsAppQueueStatus: whatsAppQueueStatus,
+      invitationNameSortOrder: invitationNameSortOrder,
+      // sourceSortOrder: sourceSortOrder,
+      seatSortOrder: seatSortOrder,
     );
 
     if (res.parsedData?.guestFindMany != null && !res.hasException) {
@@ -96,18 +123,42 @@ class CheckInViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void deleteGuestData(NavigatorState navigator) async {
-  //   var res = await GqlUserService.userSoftDeletes(users: selectedGuests);
+  Future<void> deleteGuestData(NavigatorState navigator) async {
+    // AppDialog.showDialogProgress(navigator);
 
-  //   if (!res.hasException) {
-  //     selectedGuests.clear();
-  //     initCheckInView();
-  //     AppSnackbar.show(navigator, title: "Berhasil dihapus");
-  //   } else {
-  //     AppDialog.showErrorDialog(navigator, error: gqlErrorParser(res));
-  //     cl('[counttotalUnCheckIn].error = ${gqlErrorParser(res)}');
-  //   }
-  // }
+    // var res = await GqlGuestService.guestDeleteMany(guests: selectedGuests);
+
+    // if (res.hasException) {
+    //   navigator.pop();
+    //   selectedGuests.clear();
+    //   AppSnackbar.show(navigator, title: "Gagal dihapus");
+    // } else {
+    //   navigator.pop();
+    //   AppSnackbar.show(navigator, title: "Berhasil dihapus");
+    // }
+  }
+
+  Future<void> qrCodeScan({
+    required NavigatorState navigator,
+    required String guestId,
+  }) async {
+    var res = await GqlGuestService.qrCodeScan(
+      userId: AuthService.user!.id,
+      guestId: guestId,
+    );
+
+    cl('GUEST ID' + AuthService.user!.id);
+    cl('GUEST ID' + guestId);
+
+    if (res.parsedData?.qrCodeScan != null) {
+      scannedGuest = res.parsedData?.qrCodeScan;
+    } else {
+      AppSnackbar.show(navigator, title: "Gagal check-in, silahkan coba lagi");
+      cl('[qrCodeScan].error = ${gqlErrorParser(res)}');
+    }
+
+    notifyListeners();
+  }
 
   void onSelectAll(bool? val) {
     if (val == null || guests == null) {

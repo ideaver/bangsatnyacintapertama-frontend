@@ -46,6 +46,10 @@ class GuestInvitationViewModel extends ChangeNotifier {
     selectedSort = actionDropdownItems.first;
     selectedStatus = statusDropdownItems.last;
 
+    invitationNameSortOrder = Enum$SortOrder.asc;
+    sourceSortOrder = Enum$SortOrder.asc;
+    seatSortOrder = Enum$SortOrder.asc;
+
     userRole = Enum$UserRole.GUEST;
     confirmationStatus = null;
     emailQueueStatus = null;
@@ -57,32 +61,6 @@ class GuestInvitationViewModel extends ChangeNotifier {
     counttotalGuestInvitationSent();
     counttotalGuestInvitationFailedSent();
     getAllGuests();
-
-    // TEST PURPOSE
-    // guests = [
-    //   ...List.generate(
-    //     20,
-    //     (index) => Query$UserFindMany$userFindMany(
-    //       id: '',
-    //       fullName: 'User ${index + 1}',
-    //       password: "",
-    //       role: Enum$UserRole.GUEST,
-    //       email: "user${index + 1}@user.com",
-    //       whatsapp: "+6283366446${index + 10}",
-    //       guestInfo: Query$UserFindMany$userFindMany$guestInfo(
-    //         userId: "",
-    //         parties: 1,
-    //         confirmationStatus: Enum$ConfirmationStatus.CONFIRMED,
-    //         personInCharge: "User X",
-    //         category1: "Guest",
-    //         category2: "VIP",
-    //         seat: "${index + 1}",
-    //       ),
-    //       createdAt: DateTime.now().toIso8601String(),
-    //       updatedAt: DateTime.now().toIso8601String(),
-    //     ),
-    //   )
-    // ];
   }
 
   void refreshData({bool reset = false}) async {
@@ -216,11 +194,6 @@ class GuestInvitationViewModel extends ChangeNotifier {
       selectedGuests.clear();
     }
 
-    cl(val);
-    cl(selectedGuests.length);
-    cl(guests?.length);
-    cl(selectedGuests.length == guests?.length);
-
     notifyListeners();
   }
 
@@ -234,10 +207,6 @@ class GuestInvitationViewModel extends ChangeNotifier {
     } else {
       selectedGuests.remove(guests![i]);
     }
-
-    cl(val);
-    cl(selectedGuests.length);
-    cl(guests?.length);
 
     notifyListeners();
   }

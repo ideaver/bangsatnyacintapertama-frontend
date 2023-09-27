@@ -1,3 +1,4 @@
+import 'package:bangsatnyacintapertama_graphql_client/schema/generated/schema.graphql.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_toolkit/responsive_toolkit.dart';
@@ -12,9 +13,11 @@ import '../../model/table_model.dart';
 import '../../view_model/check_in_view_model.dart';
 import '../../widget/atom/app_card_container.dart';
 import '../../widget/atom/app_checkbox.dart';
+import '../../widget/atom/app_dialog.dart';
 import '../../widget/atom/app_dropdown.dart';
 import '../../widget/atom/app_icon_button.dart';
 import '../../widget/atom/app_progress_indicator.dart';
+import '../../widget/atom/app_snackbar.dart';
 import '../../widget/atom/app_table.dart';
 import '../../widget/atom/app_text_field.dart';
 import '../../widget/molecule/card_program.dart';
@@ -31,11 +34,24 @@ class CheckInView extends StatefulWidget {
 }
 
 class _CheckInViewState extends State<CheckInView> {
+  final checkInViewModel = locator<CheckInViewModel>();
+
+  ScrollController scrollController = ScrollController();
+
   List<TableModel> headerData = [];
 
   @override
   void initState() {
-    final checkInViewModel = locator<CheckInViewModel>();
+    checkInViewModel.searchController = TextEditingController();
+
+    scrollController.addListener(() {
+      if (scrollController.offset == scrollController.position.maxScrollExtent) {
+        checkInViewModel.getAllGuests(
+          skip: checkInViewModel.guests!.length,
+          contains: checkInViewModel.searchController.text,
+        );
+      }
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       headerData = [
@@ -89,6 +105,12 @@ class _CheckInViewState extends State<CheckInView> {
   }
 
   @override
+  void dispose() {
+    checkInViewModel.searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     AppSizes.screenSize = MediaQuery.of(context).size;
     final navigator = Navigator.of(context);
@@ -110,88 +132,105 @@ class _CheckInViewState extends State<CheckInView> {
   }
 
   Widget compactBodyLayout() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSizes.padding),
-      child: Column(
-        children: [
-          checkInTotalCard(),
-          const SizedBox(height: AppSizes.padding),
-          unCheckInTotalCard(),
-          const SizedBox(height: AppSizes.padding),
-          emptySeatTotalCard(),
-          const SizedBox(height: AppSizes.padding),
-          invitedGuestList(),
-        ],
+    return Scrollbar(
+      controller: scrollController,
+      thickness: AppSizes.padding / 1.5,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        padding: const EdgeInsets.all(AppSizes.padding),
+        child: Column(
+          children: [
+            checkInTotalCard(),
+            const SizedBox(height: AppSizes.padding),
+            unCheckInTotalCard(),
+            const SizedBox(height: AppSizes.padding),
+            emptySeatTotalCard(),
+            const SizedBox(height: AppSizes.padding),
+            invitedGuestList(),
+          ],
+        ),
       ),
     );
   }
 
   Widget wideBodyLayout() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSizes.padding),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 300,
-            child: Row(
-              children: [
-                Expanded(child: checkInTotalCard()),
-                const SizedBox(width: AppSizes.padding),
-                Expanded(child: unCheckInTotalCard()),
-                const SizedBox(width: AppSizes.padding),
-                Expanded(child: emptySeatTotalCard()),
-              ],
+    return Scrollbar(
+      controller: scrollController,
+      thickness: AppSizes.padding / 1.5,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        padding: const EdgeInsets.all(AppSizes.padding),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 300,
+              child: Row(
+                children: [
+                  Expanded(child: checkInTotalCard()),
+                  const SizedBox(width: AppSizes.padding),
+                  Expanded(child: unCheckInTotalCard()),
+                  const SizedBox(width: AppSizes.padding),
+                  Expanded(child: emptySeatTotalCard()),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: AppSizes.padding),
-          invitedGuestList(),
-        ],
+            const SizedBox(height: AppSizes.padding),
+            invitedGuestList(),
+          ],
+        ),
       ),
     );
   }
 
   Widget checkInTotalCard() {
-    return CardProgram(
-      iconProgram: Icons.person_outline,
-      backgroundColorIcon: AppColors.white,
-      backgroundColor: AppColors.primary,
-      title: 'TOTAL CHECK-IN',
-      contentText: '0',
-      contentSubtext: 'ORANG',
-      titleColor: AppColors.white.withOpacity(0.54),
-      subtitleColor: AppColors.white,
-      withButton: true,
-      toolTipTitle: 'Lorem',
-      toolTipsubtitle: 'Lorem ipsum dolor ',
-      buttonText: "QR Scan",
-      onTapButton: () {
-        Navigator.pushNamed(context, QRCodeScannerView.routeName);
-      },
-    );
+    return Consumer<CheckInViewModel>(builder: (context, model, _) {
+      return CardProgram(
+        iconProgram: Icons.person_outline,
+        backgroundColorIcon: AppColors.white,
+        backgroundColor: AppColors.primary,
+        title: 'TOTAL CHECK-IN',
+        contentText: '0',
+        contentSubtext: 'ORANG',
+        titleColor: AppColors.white.withOpacity(0.54),
+        subtitleColor: AppColors.white,
+        withButton: true,
+        toolTipTitle: 'Lorem',
+        toolTipsubtitle: 'Lorem ipsum dolor ',
+        buttonText: "QR Scan",
+        onTapButton: () async {
+          await Navigator.pushNamed(context, QRCodeScannerView.routeName);
+          model.refreshData();
+        },
+      );
+    });
   }
 
   Widget unCheckInTotalCard() {
-    return const CardProgram(
-      iconProgram: Icons.person_outline,
-      title: 'BELUM CHECK-IN',
-      contentText: '0',
-      contentSubtext: 'ORANG',
-      bottomTitleColor: AppColors.baseLv4,
-      toolTipTitle: 'Lorem',
-      toolTipsubtitle: 'Lorem ipsum dolor ',
-    );
+    return Consumer<CheckInViewModel>(builder: (context, model, _) {
+      return const CardProgram(
+        iconProgram: Icons.person_outline,
+        title: 'BELUM CHECK-IN',
+        contentText: '0',
+        contentSubtext: 'ORANG',
+        bottomTitleColor: AppColors.baseLv4,
+        toolTipTitle: 'Lorem',
+        toolTipsubtitle: 'Lorem ipsum dolor ',
+      );
+    });
   }
 
   Widget emptySeatTotalCard() {
-    return const CardProgram(
-      iconProgram: Icons.person_outline,
-      title: 'KURSI KOSONG',
-      contentText: '0',
-      contentSubtext: 'KURSI',
-      bottomTitleColor: AppColors.baseLv4,
-      toolTipTitle: 'Lorem',
-      toolTipsubtitle: 'Lorem ipsum dolor ',
-    );
+    return Consumer<CheckInViewModel>(builder: (context, model, _) {
+      return const CardProgram(
+        iconProgram: Icons.person_outline,
+        title: 'KURSI KOSONG',
+        contentText: '0',
+        contentSubtext: 'KURSI',
+        bottomTitleColor: AppColors.baseLv4,
+        toolTipTitle: 'Lorem',
+        toolTipsubtitle: 'Lorem ipsum dolor ',
+      );
+    });
   }
 
   Widget invitedGuestList() {
@@ -246,7 +285,7 @@ class _CheckInViewState extends State<CheckInView> {
                   const SizedBox(height: AppSizes.padding / 1.5),
                   Row(
                     children: [
-                      Expanded(child: invitedGuestStatusDropDown()),
+                      Expanded(child: sortDropDown()),
                       const SizedBox(width: AppSizes.padding / 1.5),
                       Expanded(child: actionDropDown()),
                     ],
@@ -266,29 +305,29 @@ class _CheckInViewState extends State<CheckInView> {
       Breakpoints(
         xs: Row(
           children: [
-            refreshButton(),
-            const SizedBox(width: AppSizes.padding / 1.5),
             deleteButton(),
+            const SizedBox(width: AppSizes.padding / 1.5),
+            refreshButton(),
           ],
         ),
         xl: Row(
           children: [
             Expanded(child: searchField()),
             const SizedBox(width: AppSizes.padding / 1.5),
-            Expanded(child: invitedGuestStatusDropDown()),
+            Expanded(child: sortDropDown()),
             const SizedBox(width: AppSizes.padding / 1.5),
             Expanded(child: actionDropDown()),
             const SizedBox(width: AppSizes.padding / 1.5),
-            refreshButton(),
-            const SizedBox(width: AppSizes.padding / 1.5),
             deleteButton(),
+            const SizedBox(width: AppSizes.padding / 1.5),
+            refreshButton(),
           ],
         ),
       ),
     );
   }
 
-  Widget invitedGuestStatusDropDown() {
+  Widget sortDropDown() {
     return Consumer<CheckInViewModel>(builder: (context, model, _) {
       return AppDropDown(
         customButton: AppCardContainer(
@@ -305,7 +344,10 @@ class _CheckInViewState extends State<CheckInView> {
               Expanded(
                 child: Row(
                   children: [
-                    model.selectedSort?.icon ?? const SizedBox.shrink(),
+                    const Icon(
+                      Icons.sort,
+                      size: 14,
+                    ),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(left: AppSizes.padding / 2),
@@ -324,7 +366,7 @@ class _CheckInViewState extends State<CheckInView> {
           ),
         ),
         items: [
-          ...checkInSortirDropdownItems.map(
+          ...guestSortirDropdownItems.map(
             (item) => DropdownMenuItem<MenuItemModel>(
               value: item,
               child: Row(
@@ -344,6 +386,25 @@ class _CheckInViewState extends State<CheckInView> {
         ],
         onChanged: (value) {
           model.selectedSort = value as MenuItemModel;
+
+          if (model.selectedSort!.text!.contains('Name')) {
+            if (model.selectedSort!.text!.contains('Ascending')) {
+              model.invitationNameSortOrder = Enum$SortOrder.asc;
+            } else {
+              model.invitationNameSortOrder = Enum$SortOrder.desc;
+            }
+          }
+
+          if (model.selectedSort!.text!.contains('Seat')) {
+            if (model.selectedSort!.text!.contains('Ascending')) {
+              model.seatSortOrder = Enum$SortOrder.asc;
+            } else {
+              model.seatSortOrder = Enum$SortOrder.desc;
+            }
+          }
+
+          model.getAllGuests();
+
           setState(() {});
         },
       );
@@ -396,6 +457,8 @@ class _CheckInViewState extends State<CheckInView> {
         ],
         onChanged: (value) {
           model.selectedAction = value as MenuItemModel;
+
+          // TODO
           setState(() {});
         },
       );
@@ -428,7 +491,7 @@ class _CheckInViewState extends State<CheckInView> {
         backgroundColor: AppColors.baseLv7,
         borderRadius: AppSizes.radius,
         onPressed: () {
-          model.initCheckInView();
+          model.refreshData(reset: true);
         },
       );
     });
@@ -436,32 +499,40 @@ class _CheckInViewState extends State<CheckInView> {
 
   Widget deleteButton() {
     return Consumer<CheckInViewModel>(builder: (context, model, _) {
-      return AppIconButton(
-        icon: Icons.delete_forever_outlined,
-        iconSize: 22,
-        backgroundColor: AppColors.baseLv7,
-        borderRadius: AppSizes.radius,
-        onPressed: () {
-          // final navigator = Navigator.of(context);
-          // if (model.selectedGuests.isEmpty) {
-          //   AppSnackbar.show(navigator, title: "Pilih data terlebih dahulu");
-          //   return;
-          // }
+      return Opacity(
+        opacity: model.selectedGuests.isEmpty ? 0.5 : 1.0,
+        child: AppIconButton(
+          icon: Icons.delete_forever_outlined,
+          iconSize: 22,
+          backgroundColor: AppColors.baseLv7,
+          borderRadius: AppSizes.radius,
+          onPressed: () {
+            if (model.selectedGuests.isEmpty) {
+              return;
+            }
 
-          // AppDialog.show(
-          //   navigator,
-          //   title: "Hapus Data",
-          //   text:
-          //       "Apa anda yakin ingin menghapus ${model.selectedGuests.length} data ini?\nAnda tidak dapat memulihkan data yang telah dihapus!",
-          //   rightButtonText: "Hapus (${model.selectedGuests.length})",
-          //   leftButtonText: "Batal",
-          //   rightButtonTextColor: AppColors.red,
-          //   onTapRightButton: () {
-          //     navigator.pop();
-          //     model.deleteGuestData(navigator);
-          //   },
-          // );
-        },
+            final navigator = Navigator.of(context);
+            if (model.selectedGuests.isEmpty) {
+              AppSnackbar.show(navigator, title: "Pilih data terlebih dahulu");
+              return;
+            }
+
+            AppDialog.show(
+              navigator,
+              title: "Hapus Data",
+              text:
+                  "Apa anda yakin ingin menghapus ${model.selectedGuests.length} data ini?\nAnda tidak dapat memulihkan data yang telah dihapus!",
+              rightButtonText: "Hapus (${model.selectedGuests.length})",
+              leftButtonText: "Batal",
+              rightButtonTextColor: AppColors.red,
+              onTapRightButton: () async {
+                navigator.pop();
+                await model.deleteGuestData(navigator);
+                model.refreshData();
+              },
+            );
+          },
+        ),
       );
     });
   }
@@ -486,14 +557,8 @@ class _CheckInViewState extends State<CheckInView> {
           context,
           Breakpoints(
             xs: AppSizes.screenSize.width * 2,
+            sm: AppSizes.screenSize.width * 2,
             xl: AppSizes.screenSize.width,
-          ),
-        ),
-        height: ResponsiveLayout.value(
-          context,
-          Breakpoints(
-            xs: AppSizes.screenSize.height - 350,
-            xl: AppSizes.screenSize.height - 280,
           ),
         ),
         padding: const EdgeInsets.all(AppSizes.padding),
@@ -505,7 +570,7 @@ class _CheckInViewState extends State<CheckInView> {
             TableModel(
               expanded: false,
               child: AppCheckbox(
-                value: false,
+                value: model.selectedGuests.contains(model.guests![i]),
                 fillColor: AppColors.primary,
                 padding: const EdgeInsets.only(left: AppSizes.padding / 2),
                 onChanged: (val) {
@@ -519,23 +584,23 @@ class _CheckInViewState extends State<CheckInView> {
             ),
             TableModel(
               // data: '${model.guests![i].guestInfo?.category1 ?? ''}/${model.guests![i].guestInfo?.category2 ?? ''}',
-              data: '${model.guests![i].category}',
+              data: model.guests![i].category ?? '-',
             ),
             // TableModel(
             //   data: '${model.guests![i].email}',
             // ),
             TableModel(
-              data: '${model.guests![i].whatsapp}',
+              data: '${model.guests![i].whatsapp ?? '-'}',
             ),
             TableModel(
-              data: model.guests![i].studio,
+              data: model.guests![i].studio ?? '-',
               textStyle: AppTextStyle.bold(context),
             ),
             TableModel(
               data: model.guests![i].seat ?? '-',
             ),
             TableModel(
-              data: '${model.guests![i].showTime}',
+              data: model.guests![i].showTime ?? '-',
             ),
             // TableModel(
             //   child: rsvpTableWidgetValue(

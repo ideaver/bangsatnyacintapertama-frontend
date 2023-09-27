@@ -54,6 +54,7 @@ class _LoginViewState extends State<LoginView> {
           return Consumer<LoginViewModel>(builder: (context, model, _) {
             return Center(
               child: Container(
+                padding: const EdgeInsets.all(AppSizes.padding),
                 constraints: const BoxConstraints(maxWidth: 400),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,

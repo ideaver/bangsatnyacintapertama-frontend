@@ -1,5 +1,4 @@
 import 'package:bangsatnyacintapertama/app/utility/console_log.dart';
-import 'package:bangsatnyacintapertama/app/utility/external_launcher.dart';
 import 'package:bangsatnyacintapertama/view/invitation_guest/add_edit_guest_dialog.dart';
 import 'package:bangsatnyacintapertama/widget/atom/app_button.dart';
 import 'package:bangsatnyacintapertama/widget/atom/app_progress_indicator.dart';
@@ -14,6 +13,7 @@ import '../../app/service/locator/service_locator.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_sizes.dart';
 import '../../app/theme/app_text_style.dart';
+import '../../app/utility/external_launcher.dart';
 import '../../model/menu_item_model.dart';
 import '../../model/table_model.dart';
 import '../../view_model/guest_invitation_view_model.dart';
@@ -678,7 +678,6 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
       }
 
       return AppTable(
-        // scrollController: scrollController,
         borderRadius: AppSizes.radius,
         tableBorderColor: AppColors.baseLv6,
         tableBorderWidth: 1,
@@ -687,23 +686,13 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
           context,
           Breakpoints(
             xs: AppSizes.screenSize.width * 2,
+            sm: AppSizes.screenSize.width * 2,
             xl: AppSizes.screenSize.width,
           ),
         ),
-        // height: double.maxFinite,
-        // height: ResponsiveLayout.value(
-        //   context,
-        //   Breakpoints(
-        //     xs: AppSizes.screenSize.height - 350,
-        //     xl: AppSizes.screenSize.height - 280,
-        //   ),
-        // ),
         padding: const EdgeInsets.all(AppSizes.padding),
         maxLines: 2,
         headerData: headerData,
-        // onLoadMore: () {
-        //   model.getAllGuests(skip: model.guests!.length, contains: model.searchController.text);
-        // },
         data: List.generate(
           model.guests!.length,
           (i) => [
@@ -733,7 +722,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
               data: '${model.guests![i].whatsapp ?? '-'}',
             ),
             TableModel(
-              data: model.guests![i].studio,
+              data: model.guests![i].studio ?? '-',
               textStyle: AppTextStyle.bold(context),
             ),
             TableModel(
@@ -770,8 +759,7 @@ class _InvitationGuestViewState extends State<InvitationGuestView> {
                         cl(model.guests![i].invitationImage?.path);
                         ExternalLauncher.openUrl(model.guests![i].invitationImage?.path ?? '');
                         // await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
-                        // await WebImageDownloader.downloadImageFromWeb(
-                        //     "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1280px-Image_created_with_a_mobile_phone.png");
+                        // await WebImageDownloader.downloadImageFromWeb(model.guests![i].invitationImage?.path ?? '');
                       },
                       child: Container(
                         color: AppColors.transparent,

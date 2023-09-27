@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 
-import '../../app/service/network_checker/network_checker_service.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_sizes.dart';
 import '../../app/theme/app_text_style.dart';
-import '../../app/utility/console_log.dart';
 import '../../app/utility/date_formatter.dart';
+import '../../view_model/check_in_view_model.dart';
 
 class QRCodeScannerView extends StatefulWidget {
   const QRCodeScannerView({super.key});
@@ -19,14 +18,6 @@ class QRCodeScannerView extends StatefulWidget {
 }
 
 class _QRCodeScannerViewState extends State<QRCodeScannerView> {
-  List<String> fakenames = [
-    "Jhon Doe",
-    "Toyama Nao",
-    "Amamiya Sora",
-  ];
-
-  String code = '';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,25 +33,16 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
 
   Widget body() {
     return Center(
-      child: Consumer<NetworkCheckerService>(
-        builder: (context, network, _) {
-          cl(network.isConnected);
-          if (!network.isConnected) {
-            return noInternet();
-          }
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSizes.padding),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                header(),
-                scanner(),
-                result(),
-              ],
-            ),
-          );
-        },
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSizes.padding),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            header(),
+            scanner(),
+            result(),
+          ],
+        ),
       ),
     );
   }
@@ -91,69 +73,110 @@ class _QRCodeScannerViewState extends State<QRCodeScannerView> {
   }
 
   Widget scanner() {
-    return Container(
-      margin: const EdgeInsets.all(AppSizes.padding * 2),
-      constraints: BoxConstraints(
-        maxHeight: AppSizes.screenSize.height / 2,
-      ),
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(AppSizes.radius * 2),
-          child: MobileScanner(
-            onDetect: (capture) {
-              final List<Barcode> barcodes = capture.barcodes;
-              // final Uint8List? image = capture.image;
-              for (final barcode in barcodes) {
-                // code = fakenames[Random().nextInt(3)];
-                code = barcode.rawValue ?? '';
-                debugPrint('Barcode found! ${barcode.rawValue}');
-                setState(() {});
-              }
-            },
+    return Consumer<CheckInViewModel>(builder: (context, model, _) {
+      return Container(
+        margin: const EdgeInsets.all(AppSizes.padding * 2),
+        constraints: BoxConstraints(
+          maxHeight: AppSizes.screenSize.height / 2,
+        ),
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppSizes.radius * 2),
+            child: MobileScanner(
+              onDetect: (capture) {
+                final navigator = Navigator.of(context);
+                final List<Barcode> barcodes = capture.barcodes;
+                // final Uint8List? image = capture.image;
+                // for (final barcode in barcodes) {
+                debugPrint('Barcode found! ${barcodes.firstOrNull?.rawValue}');
+
+                if (barcodes.firstOrNull?.rawValue != null) {
+                  model.qrCodeScan(navigator: navigator, guestId: barcodes.first.rawValue!);
+                }
+                // }
+              },
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget result() {
-    if (code == '') {
-      return const SizedBox.shrink();
-    }
+    return Consumer<CheckInViewModel>(builder: (context, model, _) {
+      if (model.scannedGuest == null) {
+        return const SizedBox.shrink();
+      }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          code,
-          textAlign: TextAlign.center,
-          style: AppTextStyle.bold(
-            context,
-            fontSize: 26,
-            color: AppColors.white,
+      if (!model.scannedGuest!.isSuccess) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Gagal',
+              textAlign: TextAlign.center,
+              style: AppTextStyle.bold(
+                context,
+                fontSize: 26,
+                color: AppColors.white,
+              ),
+            ),
+            const SizedBox(height: AppSizes.padding / 2),
+            Text(
+              '${model.scannedGuest?.message}',
+              style: AppTextStyle.medium(
+                context,
+                fontSize: 14,
+                color: AppColors.white,
+              ),
+            ),
+          ],
+        );
+      }
+
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            model.scannedGuest?.qrData.guest.invitationName ?? '-',
+            textAlign: TextAlign.center,
+            style: AppTextStyle.bold(
+              context,
+              fontSize: 26,
+              color: AppColors.white,
+            ),
           ),
-        ),
-        const SizedBox(height: AppSizes.padding / 2),
-        Text(
-          'Berhasil Check-In pada ${DateFormatter.slashDateShortedYearWithClock(DateTime.now().toIso8601String())}',
-          style: AppTextStyle.medium(
-            context,
-            fontSize: 14,
-            color: AppColors.white,
+          const SizedBox(height: AppSizes.padding / 2),
+          Text(
+            'Berhasil Check-In pada ${model.scannedGuest?.qrData.createdAt != null ? DateFormatter.slashDateShortedYearWithClock(model.scannedGuest!.qrData.createdAt) : '-'}',
+            style: AppTextStyle.medium(
+              context,
+              fontSize: 14,
+              color: AppColors.white,
+            ),
           ),
-        ),
-        const SizedBox(height: AppSizes.padding),
-        Text(
-          'Seat 4H',
-          style: AppTextStyle.bold(
-            context,
-            fontSize: 26,
-            color: AppColors.white,
+          const SizedBox(height: AppSizes.padding),
+          Text(
+            'Seat ${model.scannedGuest?.qrData.guest.seat}',
+            style: AppTextStyle.bold(
+              context,
+              fontSize: 26,
+              color: AppColors.white,
+            ),
           ),
-        ),
-      ],
-    );
+          const SizedBox(height: AppSizes.padding),
+          Text(
+            'Studio: ${model.scannedGuest?.qrData.guest.studio}  |  Show Time: ${model.scannedGuest?.qrData.guest.showTime}',
+            style: AppTextStyle.bold(
+              context,
+              fontSize: 20,
+              color: AppColors.white,
+            ),
+          ),
+        ],
+      );
+    });
   }
 
   Widget noInternet() {
