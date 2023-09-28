@@ -4,6 +4,7 @@ import 'package:bangsatnyacintapertama/view_model/guest_add_edit_view.dart';
 import 'package:bangsatnyacintapertama/view_model/guest_invitation_view_model.dart';
 import 'package:bangsatnyacintapertama/view_model/main_view_model.dart';
 import 'package:bangsatnyacintapertama_graphql_client/graphql_service.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -71,6 +72,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => locator<GuestAddEditViewModel>()),
       ],
       child: MaterialApp(
+        scrollBehavior: const MaterialScrollBehavior().copyWith(
+          dragDevices: {
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.touch,
+            PointerDeviceKind.stylus,
+            PointerDeviceKind.unknown
+          },
+        ),
         title: 'Bangsatnya Cinta Pertama',
         theme: AppTheme.getTheme(),
         debugShowCheckedModeBanner: true,
